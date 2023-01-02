@@ -187,7 +187,7 @@ Table sport_betting.private_users_info {
 Table sport_betting.codes {
   id string [unique, not null, ref: > sport_betting.users_info.id]
   created_at timestamp [default: `now()`]
-  secret_code string
+  secret_code string [not null]
   Indexes {
     (id) [pk]
   }
