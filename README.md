@@ -206,7 +206,7 @@ Table sport_betting.codes {
 ## Ручки
 ## Парсер
 ## Схема базы данных
-![img_3.png](img_3.png)
+![img_1.png](img_1.png)
 https://dbdiagram.io/d/63b33edc7d39e42284e881f7
 ```
 Table sport_betting.users_info {
