@@ -165,7 +165,7 @@ definitions:
                    type: string 
 ```
 ## Схема базы данных
-![img_1.png](img_1.png)
+![img.png](img.png)
 https://dbdiagram.io/d/63b33f527d39e42284e8820d
 ```
 Table sport_betting.users_info {
