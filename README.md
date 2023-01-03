@@ -203,8 +203,165 @@ Table sport_betting.codes {
 5) Считаем, что телеграм-ник является неизменным для пользователя и единственным однозначным идентификатором
 
 # Соревнования
-## Ручки
+Вступление в соревнования будет работать по ссылке. Только создатель соревнования может сам поделиться ей с друзьями и  только так пользователь может вступить в него.
 ## Парсер
+Подобновлять инфу с ссылок для парсинга будем раз в день, обновляем инфу о соревнованиях до момента завершения всех матчей соревнования, матчей - до момент авыставления счета. Проходимся по всем соревнованиям и матчам таблицы, где is_active == true и если что обновляем записи. При дергании ручек где есть фильтры по активности мероприятия так же обновляем инфу о всех мероприятиях
+## Ручки
+```
+/competitions:
+        get:
+            description: Получает все соревнования пользователя.
+            parameters:
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+            responses:
+                '200':
+                    schema:
+                        type: object
+                        required:
+                          - competitions
+                        properties:
+                            competitions:
+                                type: array
+                                items:
+                                    $ref: '#/definitions/Competition'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь не найден
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                        
+/competitions_info:
+        post:
+            description: Добавляет пользователя в участие в соревнование.
+            parameters:
+              - in: query
+                name: competition_id
+                required: true
+                schema:
+                    type: string
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+            responses:
+                '200':
+                    schema:
+                        $ref: '#/definitions/Competition'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+        get:
+            description: Отдает информаицю о соревновании для этого пользовтеля.
+            parameters:
+              - in: query
+                name: competition_id
+                required: true
+                schema:
+                    type: string
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+            responses:
+                '200':
+                    schema:
+                        $ref: '#/definitions/Competition'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+definitions:
+       Match:
+           type: object
+           required:
+             - id
+             - name
+             - first_team_result
+             - second_team_result
+           properties:
+               id:
+                   type: integer
+               name:
+                   type: string
+               first_team_result:
+                   type: integer
+               second_team_result:
+                   type: integer
+               bets_result:
+                   type: double
+
+       Competition:
+           type: object
+           required:
+             - name
+             - id
+             - is_active
+             - matches
+           properties:
+               name:
+                   type: string
+               id:
+                   type: integer
+               is_active:
+                   type: boolean
+               matches:
+                   type: array
+                   items:
+                       $ref: '#/definitions/Match'
+               leader_board:
+                   type: array
+                   items:
+                       #ref: '#/definitions/BetsResult'
+       
+       Bets:
+           type: object
+           required:
+             - name
+             - bet
+           properties:
+               name:
+                   type: string
+               bet:
+                   type: integer
+           
+       BetsResult:
+           type: object
+           required:
+             - user_id
+             - result
+           properties:
+               user_id:
+                   type: string
+               result:
+                   type: double
+               bets:
+                   type: array
+                   items:
+                       $ref: '#/definitions/Bets'
+           
+           
+                       
+                    
+           
+```
 ## Схема базы данных
 ![img_1.png](img_1.png)
 https://dbdiagram.io/d/63b33edc7d39e42284e881f7
@@ -225,6 +382,7 @@ Table sport_betting.competitions_info {
   end_time timestamp
   is_active boolean [default: true]
   parsing_ref string [not null]
+  created_by string [not null, ref: > sport_betting.users_info.id]
   Indexes {
     (id, name) [pk]
   }
@@ -238,6 +396,8 @@ Table sport_betting.matches_info {
   end_time timestamp
   first_team_name string [not null]
   second_team_name string [not null]
+  first_team_result int
+  second_team_result int
   is_active boolean [default: true]
   parsing_ref string
   Indexes {
