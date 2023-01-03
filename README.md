@@ -203,7 +203,7 @@ Table sport_betting.codes {
 5) Считаем, что телеграм-ник является неизменным для пользователя и единственным однозначным идентификатором
 
 # Соревнования
-Вступление в соревнования будет работать по ссылке. Только создатель соревнования может сам поделиться ей с друзьями и  только так пользователь может вступить в него.
+Вступление в соревнования будет работать по ссылке. Только создатель соревнования может сам поделиться ей с друзьями и  только так пользователь может вступить в него. Пока количество и виды ставок будут жестко ограничено, подсчет очков по ним будет захардокжен, поскольку непонятно как начислять баллы и задавать нормальную системы по кастомным ставкам
 ## Парсер
 Подобновлять инфу с ссылок для парсинга будем раз в день, обновляем инфу о соревнованиях до момента завершения всех матчей соревнования, матчей - до момент авыставления счета. Проходимся по всем соревнованиям и матчам таблицы, где is_active == true и если что обновляем записи. При дергании ручек где есть фильтры по активности мероприятия так же обновляем инфу о всех мероприятиях
 ## Ручки
@@ -315,6 +315,98 @@ Table sport_betting.codes {
                     description: Пользователь или соревнование не найдены
                     schema:
                         $ref: '#/definitions/ErrorResponse'
+                        
+/create/competition:
+        post:
+            description: Создает новое соревнование.
+            parameters:
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+              - in: body
+                name: parsing_ref
+                required: true
+                schema:
+                    type: string
+            responses:
+                '200':
+                    schema:
+                        $ref: '#/definitions/Competition'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+
+/create/match:
+        post:
+            description: Создает новый матч.
+            parameters:
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+              - in: query
+                name: competion_id
+                required: true
+                schema:
+                    type: string
+              - in: body
+                name: parsing_ref
+                required: true
+                schema:
+                    type: string
+            responses:
+                '200':
+                    schema:
+                        $ref: '#/definitions/Match'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                        
+/create/bet:
+        post:
+            description: Делает ставку.
+            parameters:
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+              - in: query
+                name: match_id
+                required: true
+                schema:
+                    type: string
+              - in: body
+                required: true
+                schema:
+                    type: array
+                    items:
+                        $ref: '#/definitions/Bets'     
+            responses:
+                '200':
+                    schema:
+                        $ref: '#/definitions/Match'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
 definitions:
        Match:
            type: object
@@ -395,11 +487,6 @@ definitions:
                    type: array
                    items:
                        $ref: '#/definitions/Bets'
-           
-           
-                       
-                    
-           
 ```
 ## Схема базы данных
 ![img_1.png](img_1.png)
@@ -465,3 +552,10 @@ Table sport_betting.competition_bets {
 }
 ```
 ## Соотношение клиентского вида и бэкенд действий
+# Создание соревнований
+Создание соревнований происходит через парсинг определенной ссылки (можно поддержать несколько сайтов). После ввода в окно пользователем ссылки для парсинга будет дернута ручка /create/competition, внутри себя ручка скрывает логику записи в таблицу sport_betting.competitions_info инфы, которую мы распарсили со страницы соревнования, присваивания соревнованию айдишника, записи автора соревнования на место created_by и запсука таймера по обновлению и нфы о соревновании ежедневно. Также путем парсинга инфы о соревновании происходит заполнение данных только об уже известных матчах в matches_info и по каждому матчу также запускается таймер. Таймер по обнолвению инфы о соревнованиях при необходимости добавляет матчи, проверяет наличие новых и закрытых ставок в match_bets, исходя из данных пересчитывает значения для competition_bets. Считается, что нельзя поставить ставку на уже законченный матч (смотрится поле is_active в matches_info)
+# Просмотр соревнований
+Админ:
+НеАдмин:
+# Просмотр матчей
+# Делание ставок
