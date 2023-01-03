@@ -288,6 +288,33 @@ Table sport_betting.codes {
                     description: Пользователь или соревнование не найдены
                     schema:
                         $ref: '#/definitions/ErrorResponse'
+                        
+/match_info:
+        get:
+            description: Отдает информаицю о матче для этого пользовтеля.
+            parameters:
+              - in: query
+                name: match_id
+                required: true
+                schema:
+                    type: string
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+            responses:
+                '200':
+                    schema:
+                        $ref: '#/definitions/Match'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
 definitions:
        Match:
            type: object
@@ -296,10 +323,16 @@ definitions:
              - name
              - first_team_result
              - second_team_result
+             - first_team_name
+             - second_team_name
            properties:
                id:
                    type: integer
                name:
+                   type: string
+               first_team_name:
+                   type: string
+               second_team_name:
                    type: string
                first_team_result:
                    type: integer
@@ -307,6 +340,10 @@ definitions:
                    type: integer
                bets_result:
                    type: double
+               user_bets:
+                   type: array
+                   items:
+                       $ref: '#/definitions/Bets'
 
        Competition:
            type: object
@@ -341,6 +378,8 @@ definitions:
                    type: string
                bet:
                    type: integer
+               bet_profit:
+                   type: double
            
        BetsResult:
            type: object
