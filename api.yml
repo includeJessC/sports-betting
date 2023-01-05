@@ -2,6 +2,11 @@ openapi: 3.0.0
 info:
   title: Sports betting
   version: 0.1.9
+servers:
+  - url: http://127.0.0.1:5000
+    description: Optional server description, e.g. Main (production) server
+  - url:  http://127.0.0.1:5000
+    description: Optional server description, e.g. Internal staging server for testing
 paths:
   /user/register:
     post:
