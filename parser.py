@@ -43,9 +43,11 @@ def del_blanks(string):
         string = string[:-1]
     return string
 
-def parse_match():
-    response_match = requests.get(url='https://www.flashscorekz.com/match/zo1ZWkyF/#/match-summary/match-summary', headers=headers)
+def parse_match(url):
+    response_match = requests.get(url=url, headers=headers)
+    print(response_match.text)
     bp = BeautifulSoup(response_match.text, 'lxml')
+    print(bp)
     title = bp.find(attrs={'name': 'og:title'})
     res = title.get('content')
     score = ''
@@ -55,7 +57,4 @@ def parse_match():
     second_team = del_blanks(res[(res.find(' - '))+3:-3])
     print(first_team, second_team, score)
 
-
-
-if __name__ == '__main__':
-    parse_match()
+parse_match('https://www.flashscorekz.com/match/SQ8si8ym/#/match-summary/match-summary')
