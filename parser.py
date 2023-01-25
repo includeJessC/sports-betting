@@ -14,7 +14,6 @@ def manager(response):
             data_list.append({key: value})
         else:
             data_list[-1].update({key: value})
-    print(data_list)
     for game in data_list:
         if 'AA' in list(game.keys())[0]:
             date_start = datetime.fromtimestamp(int(game.get("AD", 0)))
@@ -57,4 +56,4 @@ def parse_match(url):
     second_team = del_blanks(res[(res.find(' - '))+3:-3])
     print(first_team, second_team, score)
 
-parse_match('https://www.flashscorekz.com/match/SQ8si8ym/#/match-summary/match-summary')
+parse_competition('https://www.flashscorekz.com/hockey/kazakhstan/championship/#/xdT0AtUS/table/overall')
