@@ -21,9 +21,9 @@ from .api.create_bet import CreateBet
 
 
 routes = [
-    dict(resource=UserRegister, urls=['/user/register'], endpoint='user_register'),
-    dict(resource=UserLogin, urls=['/user/login'], endpoint='user_login'),
-    dict(resource=UserRegisterApprove, urls=['/user/register/approve'], endpoint='user_register_approve'),
+    dict(resource=UserRegister, urls=['/user_register'], endpoint='user_register'),
+    dict(resource=UserLogin, urls=['/user_login'], endpoint='user_login'),
+    dict(resource=UserRegisterApprove, urls=['/user_register_approve'], endpoint='user_register_approve'),
     dict(resource=User, urls=['/user'], endpoint='user'),
     dict(resource=Competitions, urls=['/competitions'], endpoint='competitions'),
     dict(resource=CompetitionsInfo, urls=['/competitions_info'], endpoint='competitions_info'),

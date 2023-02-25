@@ -8,92 +8,89 @@ servers:
   - url:  http://127.0.0.1:5000
     description: Optional server description, e.g. Internal staging server for testing
 paths:
-  /user/register:
+  /user_register:
     post:
       description: Регистрирует пользователя с заданными данными.
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/UserInfo'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInfo'
       responses:
         '200':
           description: Удачная попытка регистрации
         '400':
           description: Ошибка при валидации параметров (например, попытка повторной регистрации)
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
-  /user/login:
+  /user_login:
     post:
       description: Залогинивает пользователя с заданными данными.
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/BaseUserInfo'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseUserInfo'
       responses:
         '200':
           description: Удачная попытка логина
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь не найден
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
-  /user/register/approve:
+  /user_register_approve:
     post:
       description: Подтверждает регистрацию пользователя (страница с вводом слова регистрации).
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/RegisterApprove'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterApprove'
       responses:
         '200':
           description: Удачное подтверждение
           schema:
-            $ref: '#/definitions/UserInfo'
+            $ref: '#/components/schemas/UserInfo'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Неверное кодовое слово
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
   /user:
     put:
       description: Изменение информации о пользователе.
       parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            $ref: '#/definitions/UserMeta'
         - in: query
           name: id
           required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserMeta'
       responses:
         '200':
           description: Удачное изменение
           schema:
-            $ref: '#/definitions/UserInfo'
+            $ref: '#/components/schemas/UserInfo'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь не найден
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
     get:
       description: Выдача информации о пользователе
@@ -104,15 +101,15 @@ paths:
       responses:
         '200':
           schema:
-            $ref: '#/definitions/UserInfo'
+            $ref: '#/components/schemas/UserInfo'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь не найден
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
   /competitions:
     get:
@@ -133,15 +130,15 @@ paths:
               competitions:
                 type: array
                 items:
-                  $ref: '#/definitions/Competition'
+                  $ref: '#/components/schemas/Competition'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь не найден
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
   /competitions_info:
     post:
@@ -160,15 +157,15 @@ paths:
       responses:
         '200':
           schema:
-            $ref: '#/definitions/Competition'
+            $ref: '#/components/schemas/Competition'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь или соревнование не найдены
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
     get:
       description: Отдает информаицю о соревновании для этого пользовтеля.
       parameters:
@@ -185,15 +182,15 @@ paths:
       responses:
         '200':
           schema:
-            $ref: '#/definitions/Competition'
+            $ref: '#/components/schemas/Competition'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь или соревнование не найдены
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
   /match_info:
     get:
@@ -212,15 +209,15 @@ paths:
       responses:
         '200':
           schema:
-            $ref: '#/definitions/Match'
+            $ref: '#/components/schemas/Match'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь или соревнование не найдены
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
   /create/competition:
     post:
@@ -244,15 +241,15 @@ paths:
       responses:
         '200':
           schema:
-            $ref: '#/definitions/Competition'
+            $ref: '#/components/schemas/Competition'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь или соревнование не найдены
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
   /create/match:
     post:
@@ -276,15 +273,15 @@ paths:
       responses:
         '200':
           schema:
-            $ref: '#/definitions/Match'
+            $ref: '#/components/schemas/Match'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь или соревнование не найдены
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 
   /create/bet:
     post:
@@ -309,22 +306,23 @@ paths:
               bets:
                 type: array
                 items:
-                  $ref: '#/definitions/Bets'
+                  $ref: '#/components/schemas/Bets'
             required:
               - bets
       responses:
         '200':
           schema:
-            $ref: '#/definitions/Match'
+            $ref: '#/components/schemas/Match'
         '400':
           description: Ошибка при валидации параметров
           schema:
-            $ref: '#/definitions/ErrorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Пользователь или соревнование не найдены
           schema:
-            $ref: '#/definitions/ErrorResponse'
-definitions:
+            $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
     UserMeta:
       type: object
       required:
@@ -344,7 +342,7 @@ definitions:
         - id
       properties:
         user_meta:
-          $ref: '#/definitions/UserMeta'
+          $ref: '#/components/schemas/UserMeta'
         id:
           type: string
 
@@ -408,7 +406,7 @@ definitions:
         user_bets:
           type: array
           items:
-            $ref: '#/definitions/Bets'
+            $ref: '#/components/schemas/Bets'
 
     Competition:
       type: object
@@ -427,11 +425,11 @@ definitions:
         matches:
           type: array
           items:
-            $ref: '#/definitions/Match'
+            $ref: '#/components/schemas/Match'
         leader_board:
           type: array
           items:
-            $ref: '#/definitions/BetsResult'
+            $ref: '#/components/schemas/BetsResult'
 
     Bets:
       type: object
@@ -459,4 +457,4 @@ definitions:
         bets:
           type: array
           items:
-            $ref: '#/definitions/Bets'
+            $ref: '#/components/schemas/Bets'

@@ -1,5 +1,7 @@
 import psycopg2
 import json
+from datetime import datetime, timezone, timedelta
+import uuid
 
 
 class DataBaseManagemantSystem:
@@ -20,7 +22,9 @@ class DataBaseManagemantSystem:
         cur.execute(request)
         self.con.commit()
 
-
-if __name__ == '__main__':
-    DataBaseManagemantSystem().add_new_user('123', 'Ann', 'Nokia')
+    def check_registered(self, username):
+        cur = self.con.cursor()
+        request = f"SELECT COUNT(*) FROM sport_betting.private_users_info WHERE id = '{username}'"
+        cur.execute(request)
+        return cur.fetchone()[0] != 0
 

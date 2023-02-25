@@ -4,13 +4,14 @@ from __future__ import absolute_import
 from flask import Flask
 from flask_apscheduler import APScheduler
 
-import v1
+from v1 import bp
+from v1.db_manager import DataBaseManagemantSystem
 
 
 def create_app():
     app = Flask(__name__, static_folder='static')
     app.register_blueprint(
-        v1.bp)
+        bp)
     return app
 
 if __name__ == '__main__':
