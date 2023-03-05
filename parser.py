@@ -55,5 +55,3 @@ def parse_match(url):
     first_team = del_blanks(res[:(res.find(' - '))])
     second_team = del_blanks(res[(res.find(' - '))+3:-3])
     print(first_team, second_team, score)
-
-parse_competition('https://www.flashscorekz.com/hockey/kazakhstan/championship/#/xdT0AtUS/table/overall')
