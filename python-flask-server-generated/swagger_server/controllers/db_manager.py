@@ -53,15 +53,6 @@ class DataBaseManagemantSystem:
             return ans[2] == code
         return False
 
-    def check_registeration_approve(self, username, code):
-        cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.codes WHERE id = '{username}' AND created_at = (SELECT MAX(created_at) FROM sport_betting.codes WHERE id = '{username}')"
-        cur.execute(request)
-        ans = cur.fetchone()
-        if ans is not None:
-            return ans[2] == code
-        return False
-
     def update_approved_info(self, username):
         cur = self.con.cursor()
         request = f"UPDATE sport_betting.private_users_info SET approved = true WHERE id = '{username}'"

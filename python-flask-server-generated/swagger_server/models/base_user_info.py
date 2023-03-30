@@ -14,7 +14,7 @@ class BaseUserInfo(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, password: str=None):  # noqa: E501
+    def __init__(self, id: str=None, password: str=None, token: str=None):  # noqa: E501
         """BaseUserInfo - a model defined in Swagger
 
         :param id: The id of this BaseUserInfo.  # noqa: E501
@@ -24,15 +24,18 @@ class BaseUserInfo(Model):
         """
         self.swagger_types = {
             'id': str,
-            'password': str
+            'password': str,
+            'token': str
         }
 
         self.attribute_map = {
             'id': 'id',
-            'password': 'password'
+            'password': 'password',
+            'token': 'token'
         }
         self._id = id
         self._password = password
+        self._token = token
 
     @classmethod
     def from_dict(cls, dikt) -> 'BaseUserInfo':
@@ -90,3 +93,24 @@ class BaseUserInfo(Model):
             raise ValueError("Invalid value for `password`, must not be `None`")  # noqa: E501
 
         self._password = password
+
+    @property
+    def token(self) -> str:
+        """Gets the token of this BaseUserInfo.
+
+
+        :return: The password of this BaseUserInfo.
+        :rtype: str
+        """
+        return self._token
+
+    @token.setter
+    def token(self, token: str):
+        """Sets the password of this BaseUserInfo.
+
+
+        :param token: The token of this BaseUserInfo.
+        :type token: str
+        """
+        self._token = token
+

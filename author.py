@@ -4,9 +4,9 @@ import psycopg2
 import datetime
 
 app = Flask(__name__)
-SITE_NAME = 'http://127.0.0.1:5000'
+SITE_NAME = 'http://127.0.0.1:8080'
 
-class DataBaseManagemantSystemBot:
+class DataBaseManagemantSystemAuthor:
     def __init__(self):
         self.con = psycopg2.connect(
             database="postgres",
@@ -27,7 +27,7 @@ class DataBaseManagemantSystemBot:
 
 @app.route('/<path:path>', methods=['GET', 'POST', 'DELETE'])
 def proxy(path):
-    db = DataBaseManagemantSystemBot()
+    db = DataBaseManagemantSystemAuthor()
     global SITE_NAME
     body = request.get_json()
     token = None
@@ -60,4 +60,4 @@ def proxy(path):
 
 
 if __name__ == '__main__':
-    app.run(debug=False, port=80)
+    app.run(debug=False)
