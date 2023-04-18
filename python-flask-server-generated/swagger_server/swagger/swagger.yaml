@@ -40,6 +40,15 @@ paths:
       responses:
         "200":
           description: Удачная попытка логина
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - token
+                properties:
+                  token:
+                    type: string
         "400":
           description: Ошибка при валидации параметров
           content:

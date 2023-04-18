@@ -152,8 +152,12 @@ def user_login_post(body=None):  # noqa: E501
 
     :rtype: None
     """
+    db = DataBaseManagemantSystem()
     if connexion.request.is_json:
         body = BaseUserInfo.from_dict(connexion.request.get_json())  # noqa: E501
+    try:
+      info = db.get_user_info(body.id)
+      if info['password'] == body.password and info
     return 'do some magic!'
 
 

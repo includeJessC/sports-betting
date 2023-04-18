@@ -409,7 +409,114 @@ Table sport_betting.codes {
                     description: Пользователь или соревнование не найдены
                     schema:
                         $ref: '#/definitions/ErrorResponse'
+                        
+/create/special_bet:
+        post:
+            description: Создает специальную бинарную ставку для матча.
+            parameters:
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+              - in: query
+                name: match_id
+                required: true
+                schema:
+                    type: string
+              - in: body
+                required: true
+                schema:
+                    $ref: '#/definitions/BetSmallInfo'     
+            responses:
+                '200':
+                    schema:
+                        $ref: '#/definitions/Match'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                        
+/get/special_bet:
+        post:
+            description: Получает специальные бинарные ставки для матча.
+            parameters:
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+              - in: query
+                name: match_id
+                required: true
+                schema:
+                    type: string   
+            responses:
+                '200':
+                    schema:
+                        type: array
+                        items:
+                          $ref: '#/definitions/BetSmallInfo'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+/set/special_bet:
+        post:
+            description: Выставляет результат бинарной ставке.
+            parameters:
+              - in: query
+                name: id
+                required: true
+                schema:
+                    type: string
+              - in: query
+                name: match_id
+                required: true
+                schema:
+                    type: string  
+              - in: body
+                required: true
+                schema:
+                    $ref: '#/definitions/BetSmallInfoRes' 
+            responses:
+                '200':
+                    schema:
+                        $ref: '#/definitions/Match'
+                '400':
+                    description: Ошибка при валидации параметров
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '404':
+                    description: Пользователь или соревнование не найдены
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
 definitions:
+       BetSmallInfo:
+           type: object
+           required:
+             - name
+           properties:
+             name: 
+               type: string
+       BetSmallInfoRes:
+           type: object
+           required:
+             - name
+             - result
+           properties:
+             name: 
+               type: string
+             result:
+               type: double
        Match:
            type: object
            required:
@@ -491,7 +598,7 @@ definitions:
                        $ref: '#/definitions/Bets'
 ```
 ## Схема базы данных
-![img_1.png](img_1.png)
+![img_2.png](img_2.png)
 https://dbdiagram.io/d/63b33edc7d39e42284e881f7
 ```
 Table sport_betting.users_info {
@@ -543,15 +650,6 @@ Table sport_betting.match_bets {
     (match_id, user_id) [pk]
   }
 }
-
-Table sport_betting.competition_bets {
-  competition_id string [unique, not null, ref: > sport_betting.competitions_info.id]
-  user_id string [unique, not null, ref: > sport_betting.match_bets.user_id]
-  result double
-  Indexes {
-    (competition_id, user_id) [pk]
-  }
-}
 ```
 ## Соотношение клиентского вида и бэкенд действий
 ### Создание соревнований
@@ -563,10 +661,10 @@ Table sport_betting.competition_bets {
 Админ: содержит все то что, что неадминская + имеет кнопку которая может дернуть /create/match, она создает запись в таблицу sport_betting.matches_info, текущий варинат моей реализации будет поддерживать перевод в таком случае на страницу парсинга матча с опреденной страницы, не введения вручную. формально ручка просто делает парсинг страницы, запускает таймер для парсера, и добавляет матч руками
 НеАдмин: открывается страница со списком соревнований путем дергания ручки /competitions_info, внутри себя она содержит селект из таблиц sport_betting.competitions_info, sport_betting.matches_info по competition_id 
 ### Просмотр матчей
-Под собой скрывает дергание ручки /match_info, ручка внутри себя содержит поход в таблицы sport_betting.matches_info и sport_betting.match_bets
+Под собой скрывает дергание ручки /match_info, ручка внутри себя содержит поход в таблицы sport_betting.matches_info и sport_betting.match_bets, для того чтобы увидеть, какие кастомные ставки можно поставить, будет дергаться ручка /get/special_bet, для создания подобной ставки для матча будет дергаться ручка /create/special_bet
 ### Делание ставок
 Под собой скрывает дергания ручки /create/bet на странице с матчем, ручка проверяет что матч еще не завершен и не начат, проверяет что записи по этому матч у данного пользователя еще нет (таблица по матчам и ставкам на матч). Если все сходится, делает запись в таблицу sport_betting.match_bets.
 ### Подведение итогов ставок
-Если при принудительном перепарсивании или автоматичком парсинге страницы обнаружено, что матч завершен, изменяются записи в таблице по информации о матче, выставляется информация о времени окончании матча и is_active == false. По таблицам со ставками по матчу и соревнованию проходится пересчет по формуле с выставлением промежуточных/конечных результатов. С окончанием соревнования аналогично. Информация о ставках других участников показывается пользователю только если соревнование/матч оказывается завершенным.
+Если при принудительном перепарсивании или автоматичком парсинге страницы обнаружено, что матч завершен, изменяются записи в таблице по информации о матче, выставляется информация о времени окончании матча и is_active == false. По таблицам со ставками по матчу и соревнованию проходится пересчет по формуле с выставлением промежуточных/конечных результатов. С окончанием соревнования аналогично. Информация о ставках других участников показывается пользователю только если соревнование/матч оказывается завершенным. Ручка /set/special_bet будет использоваться для ручного выставления результатов по кастомным ставкам, будет вызывать переподсчет в общей таблице ставок
 ### Ограничение /get_code
 Зарегистрироваться у пользователя будет 5 попыток. При нахождении в базе более 5 записей с одинаковым телеграмм-ником - отдаем ошибку
