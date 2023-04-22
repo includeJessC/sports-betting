@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-headers = {"x-fsign": "SW9D1eZo"}
+headers = {"x-fsign": "SW9D1eZo", "Content-Type": "application/json charset=utf-8"}
 
 
 def manager(response):
@@ -20,19 +20,20 @@ def manager(response):
     for game in data_list:
         if 'AA' in list(game.keys())[0]:
             date_start = datetime.fromtimestamp(int(game.get("AD", 0)))
-            date_end = datetime.fromtimestamp(int(game.get("AO", 0)))
+            date_end = datetime.fromtimestamp(int(game.get("AO", 0))) if game.get("AO", 0) != 0 else None
             team_1 = game.get("AE")
             team_2 = game.get("AF")
             id = game.get("~AA")
             parsing_ref = f'https://www.flashscorekz.com/match/{id}/#/match-summary'
             matches.append(
                 {'id': id, 'name': f'{team_1} vs {team_2}', 'start_time': date_start, 'end_time': date_end, 'team1_name': team_1, 'team2_name': team_2,
-                 'team1_res': game.get("AG"), 'team2_res': game.get("AH"), 'parsing_ref': parsing_ref, 'is_active': (date_start is not None)})
+                 'team1_res': game.get("AG"), 'team2_res': game.get("AH"), 'parsing_ref': parsing_ref, 'is_active': (date_start > datetime.now())})
     return matches
 
 
 def parse_competition(url):
-    competition_id = url[(url.find('#')) + 2:(url.find('/table'))]
+    end = url.find('/table') if url.find('/table') != -1 else url.find('/live')
+    competition_id = url[(url.find('#')) + 2:end]
     response_result = requests.get(url=url, headers=headers)
     bp = BeautifulSoup(response_result.text, 'lxml')
     title = bp.find(attrs={'property': 'og:title'})

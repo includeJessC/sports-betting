@@ -82,12 +82,11 @@ class DataBaseManagemantSystem:
         cur.execute(request)
         cur = self.con.cursor()
         for match in competition['ended_matches']:
-            print("PLUMBUS")
-            request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, end_time, first_team_name, second_team_name, first_team_result, second_team_result) VALUES ('{competition['competition_id']}', '{match['id']}' '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', {match['start_time']}, {match['end_time']}, '{match['team1_name']}', '{match['team2_name']}', '{match['team1_res']}', '{match['team2_res']}')"
+            request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, end_time, first_team_name, second_team_name, first_team_result, second_team_result) VALUES ('{competition['competition_id']}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['end_time']}', '{match['team1_name']}', '{match['team2_name']}', {match['team1_res']}, {match['team2_res']})"
             cur.execute(request)
         cur = self.con.cursor()
         for match in competition['not_ended_matches']:
-            request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, end_time, first_team_name, second_team_name, first_team_result, second_team_result) VALUES ('{competition['competition_id']}', '{match['id']}' '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', {match['start_time']}, {match['end_time']}, '{match['team1_name']}', '{match['team2_name']}', '{match['team1_res']}', '{match['team2_res']}')"
+            request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, first_team_name, second_team_name) VALUES ('{competition['competition_id']}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}')"
             cur.execute(request)
         self.con.commit()
 

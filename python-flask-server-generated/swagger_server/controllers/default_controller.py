@@ -1,6 +1,7 @@
 import connexion
-import six
 
+from swagger_server.controllers.db_manager import DataBaseManagemantSystem
+from swagger_server.controllers.parser import parse_competition
 from swagger_server.models.base_user_info import BaseUserInfo  # noqa: E501
 from swagger_server.models.competition import Competition  # noqa: E501
 from swagger_server.models.create_bet_body import CreateBetBody  # noqa: E501
@@ -13,9 +14,6 @@ from swagger_server.models.match import Match  # noqa: E501
 from swagger_server.models.register_approve import RegisterApprove  # noqa: E501
 from swagger_server.models.user_info import UserInfo  # noqa: E501
 from swagger_server.models.user_meta import UserMeta  # noqa: E501
-from swagger_server import util
-from swagger_server.controllers.db_manager import DataBaseManagemantSystem
-from swagger_server.controllers.parser import parse_competition
 
 
 def competitions_get(id_):  # noqa: E501
@@ -101,7 +99,8 @@ def create_competition_post(id_, body=None):  # noqa: E501
         matches = []
         for match in result['ended_matches']:
             matches.append(
-                Match(match['id'], match['name'], match['team1_name'], match['team2_name'], match['team1_res'],
+                Match(match['id'], match['name'], match['team1_name'],
+                      match['team2_name'], match['team1_res'],
                       match['team2_res'], match['is_active']))
         for match in result['not_ended_matches']:
             matches.append(
@@ -110,7 +109,6 @@ def create_competition_post(id_, body=None):  # noqa: E501
         return Competition(result['name'], result['competition_id'], result['is_active'], matches)
     except Exception as e:
         print(e)
-        print("AUF")
         return ErrorResponse("BadRequest", "Неправильная ссылка"), 400
 
 
