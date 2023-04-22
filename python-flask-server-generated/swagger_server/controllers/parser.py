@@ -61,6 +61,15 @@ def del_blanks(string):
 def parse_match(url):
     response_match = requests.get(url=url, headers=headers)
     print(response_match.text)
+    data = response_match.text.split('¬')
+    data_list = [{}]
+    for item in data:
+        key = item.split('÷')[0]
+        value = item.split('÷')[-1]
+        if '~' in key:
+            data_list.append({key: value})
+        else:
+            data_list[-1].update({key: value})
     bp = BeautifulSoup(response_match.text, 'lxml')
     print(bp)
     title = bp.find(attrs={'name': 'og:title'})

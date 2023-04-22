@@ -44,7 +44,7 @@ def competitions_info_get(competition_id, id):  # noqa: E501
     return 'do some magic!'
 
 
-def competitions_info_post(competition_id, id):  # noqa: E501
+def competitions_info_post(competition_id, id_):  # noqa: E501
     """competitions_info_post
 
     Добавляет пользователя в участие в соревнование. # noqa: E501
@@ -56,7 +56,15 @@ def competitions_info_post(competition_id, id):  # noqa: E501
 
     :rtype: Competition
     """
-    return 'do some magic!'
+    if connexion.request.is_json:
+        body = CreateCompetitionBody.from_dict(connexion.request.get_json())
+    try:
+        db = DataBaseManagemantSystem()
+        db.add_user_to_competition(id_, competition_id)
+
+    except Exception as e:
+        print(e)
+        return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
 
 
 def create_bet_post(id, match_id, body=None):  # noqa: E501
