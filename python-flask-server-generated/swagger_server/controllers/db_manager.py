@@ -2,6 +2,15 @@ import uuid
 
 import psycopg2
 
+import __main__ as mmm
+from swagger_server.controllers.parser import parse_competition
+
+
+def update_competition(username, url):
+    res = parse_competition(url)
+    db = DataBaseManagemantSystem()
+    db.update_competition(username, res)
+
 
 class DataBaseManagemantSystem:
     def __init__(self):
@@ -98,6 +107,29 @@ class DataBaseManagemantSystem:
         cur = self.con.cursor()
         for match in competition['not_ended_matches']:
             request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, first_team_name, second_team_name) VALUES ('{competition['competition_id']}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}')"
+            cur.execute(request)
+        cur = self.con.cursor()
+        request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{competition['competition_id']}', '{username}', NULL)"
+        cur.execute(request)
+        self.con.commit()
+        mmm.scheduler.add_job(update_competition, 'interval', hours=18, args=(username, competition['parsing_ref']))
+
+    def update_competition(self, username, competition):
+        cur = self.con.cursor()
+        request = f"SELECT * FROM sport_betting.competitions_info WHERE created_by = '{username}' AND id='{competition['competition_id']}'"
+        cur.execute(request)
+        ans = cur.fetchone()
+        if ans is None:
+            raise Exception()
+        request = f"UPDATE sport_betting.competitions_info SET is_active={competition['is_active']}"
+        cur.execute(request)
+        cur = self.con.cursor()
+        for match in competition['ended_matches']:
+            request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', end_time='{match['end_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']})"
+            cur.execute(request)
+        cur = self.con.cursor()
+        for match in competition['not_ended_matches']:
+            request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, first_team_name, second_team_name) VALUES ('{competition['competition_id']}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}') ON CONFLICT (id) DO UPDATE SET is_active={match['is_active']}, start_time='{match['start_time']}'"
             cur.execute(request)
         cur = self.con.cursor()
         request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{competition['competition_id']}', '{username}', NULL)"
