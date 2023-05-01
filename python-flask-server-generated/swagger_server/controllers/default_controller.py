@@ -182,7 +182,7 @@ def user_login_post(body=None):  # noqa: E501
     try:
         info = db.get_user_info(body.id)
         if info['password'] == body.password:
-            token = db.get_user_info(body.id)
+            token = db.get_user_token(body.id)
             return InlineResponse2001(token)
     except Exception:
         return ErrorResponse("BAD_CODE", "Неправильный код"), 400
