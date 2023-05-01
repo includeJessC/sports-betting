@@ -42,7 +42,7 @@ def proxy(path):
     print(request.headers)
     print(f"TOKEN IS {token}")
     print(request.query_string.decode())
-    if token is None or username is None or not db.check_token(username, token):
+    if (token is None or username is None or not db.check_token(username, token)) and path.find('/register') is None:
         return redirect(f'{SITE_NAME}/user_login')
     if request.method == 'GET':
         print(f'{SITE_NAME}/{path}?{request.query_string.decode()}')

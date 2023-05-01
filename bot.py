@@ -23,7 +23,7 @@ class DataBaseManagemantSystemBot:
 
     def check_registered(self, username):
         cur = self.con.cursor()
-        request = f"SELECT COUNT(*) FROM sport_betting.private_users_info WHERE id = '{username}'"
+        request = f"SELECT COUNT(*) FROM sport_betting.private_users_info WHERE id = '{username}' and approved=True"
         cur.execute(request)
         return cur.fetchone()[0] != 0
 
@@ -52,7 +52,7 @@ def send_welcome(message):
     info about commands
     """
     BOT.reply_to(message,
-                 'Мои команды: \n /get_code - выдаст код для регистрации, get_password - поможет восстановить пароль')
+                 'Мои команды: \n /get_code - выдаст код для регистрации, /get_password - поможет восстановить пароль')
 
 @BOT.message_handler(commands=['get_code'])
 def send_code(message):
@@ -91,5 +91,7 @@ def send_password(message):
     except Exception:
         BOT.reply_to(message,
                      f'Что-то пошло нет: проверьте правильность введенного ника на сайте')
+    BOT.reply_to(message,
+                 f'Что-то пошло нет: проверьте правильность введенного ника на сайте')
 if __name__ == '__main__':
     BOT.infinity_polling()
