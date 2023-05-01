@@ -100,7 +100,15 @@ def create_competition_post(id_, body=None):  # noqa: E501
     if connexion.request.is_json:
         body = CreateCompetitionBody.from_dict(connexion.request.get_json())
     try:
+        if body.parsing_ref is None:
+            result = {'competition_id': '0', "name": body.name if body.name else "Default", 'is_active': False,
+                      'parsing_ref': None, 'ended_matches': [], 'not_ended_matches': []}
+            db = DataBaseManagemantSystem()
+            db.add_competition(id_, result)
+            return Competition(result['name'], result['competition_id'], result['is_active'], [])
         result = parse_competition(body.parsing_ref)
+        if body.name:
+            result['name'] = body.name
         db = DataBaseManagemantSystem()
         db.add_competition(id_, result)
         matches = []

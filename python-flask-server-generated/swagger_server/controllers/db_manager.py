@@ -99,7 +99,10 @@ class DataBaseManagemantSystem:
         if ans is not None:
             raise Exception()
         special_id = str(uuid.uuid4())
-        request = f"INSERT INTO sport_betting.competitions_info (created_by, id, name, is_active, parsing_ref, special_id) VALUES ('{username}', '{competition['competition_id']}', '{competition['name']}', {competition['is_active']}, '{competition['parsing_ref']}', '{special_id}')"
+        if competition['parsing_ref'] is not None:
+            request = f"INSERT INTO sport_betting.competitions_info (created_by, id, name, is_active, parsing_ref, special_id) VALUES ('{username}', '{competition['competition_id']}', '{competition['name']}', {competition['is_active']}, '{competition['parsing_ref']}', '{special_id}')"
+        else:
+            request = f"INSERT INTO sport_betting.competitions_info (created_by, id, name, is_active, special_id) VALUES ('{username}', '{competition['competition_id']}', '{competition['name']}', {competition['is_active']}, '{special_id}')"
         cur.execute(request)
         cur = self.con.cursor()
         for match in competition['ended_matches']:

@@ -82,10 +82,8 @@ def parse_competition(url):
 
 
 def parse_competition_with_special_match(url, match_id):
-    end = url.find('/table') if url.find('/table') != -1 else url.find('/live')
     response_result = requests.get(url=url, headers=headers)
     bp = BeautifulSoup(response_result.text, 'lxml')
-    title = bp.find(attrs={'property': 'og:title'})
     url = url[:(url.find('#'))]
     url_not_finished_matches = url + 'fixtures/'
     url_finished_matches = url + 'results/'
@@ -108,7 +106,6 @@ def del_blanks(string):
 def parse_match(url):
     response_match = requests.get(url=url, headers=headers)
     id_ = url[url.find('/match/') + 7:url.find('/#')]
-    print(id_)
     data = response_match.text.split('¬')
     data_list = [{}]
     for item in data:

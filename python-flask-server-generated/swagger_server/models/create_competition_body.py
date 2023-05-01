@@ -14,20 +14,23 @@ class CreateCompetitionBody(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, parsing_ref: str=None):  # noqa: E501
+    def __init__(self, parsing_ref: str=None, name: str=None):  # noqa: E501
         """CreateCompetitionBody - a model defined in Swagger
 
         :param parsing_ref: The parsing_ref of this CreateCompetitionBody.  # noqa: E501
         :type parsing_ref: str
         """
         self.swagger_types = {
-            'parsing_ref': str
+            'parsing_ref': str,
+            'name': str
         }
 
         self.attribute_map = {
-            'parsing_ref': 'parsing_ref'
+            'parsing_ref': 'parsing_ref',
+            'name': 'name'
         }
         self._parsing_ref = parsing_ref
+        self._name = name
 
     @classmethod
     def from_dict(cls, dikt) -> 'CreateCompetitionBody':
@@ -50,6 +53,16 @@ class CreateCompetitionBody(Model):
         """
         return self._parsing_ref
 
+    @property
+    def name(self) -> str:
+        """Gets the name of this CreateCompetitionBody.
+
+
+        :return: The name of this CreateCompetitionBody.
+        :rtype: str
+        """
+        return self._name
+
     @parsing_ref.setter
     def parsing_ref(self, parsing_ref: str):
         """Sets the parsing_ref of this CreateCompetitionBody.
@@ -58,7 +71,14 @@ class CreateCompetitionBody(Model):
         :param parsing_ref: The parsing_ref of this CreateCompetitionBody.
         :type parsing_ref: str
         """
-        if parsing_ref is None:
-            raise ValueError("Invalid value for `parsing_ref`, must not be `None`")  # noqa: E501
-
         self._parsing_ref = parsing_ref
+
+    @name.setter
+    def name(self, name: str):
+        """Sets the name of this CreateCompetitionBody.
+
+
+        :param name: The name of this CreateCompetitionBody.
+        :type name: str
+        """
+        self._name = name

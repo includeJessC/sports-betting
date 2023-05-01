@@ -549,7 +549,7 @@ components:
         name:
           type: string
         id:
-          type: integer
+          type: string
         is_active:
           type: boolean
         matches:
@@ -738,11 +738,11 @@ components:
             - null
             - null
     create_competition_body:
-      required:
-      - parsing_ref
       type: object
       properties:
         parsing_ref:
+          type: string
+        name:
           type: string
     create_match_body:
       required:

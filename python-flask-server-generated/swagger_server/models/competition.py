@@ -16,13 +16,13 @@ class Competition(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, id: int=None, is_active: bool=None, matches: List[Match]=None, leader_board: List[BetsResult]=None):  # noqa: E501
+    def __init__(self, name: str=None, id: str=None, is_active: bool=None, matches: List[Match]=None, leader_board: List[BetsResult]=None):  # noqa: E501
         """Competition - a model defined in Swagger
 
         :param name: The name of this Competition.  # noqa: E501
         :type name: str
         :param id: The id of this Competition.  # noqa: E501
-        :type id: int
+        :type id: str
         :param is_active: The is_active of this Competition.  # noqa: E501
         :type is_active: bool
         :param matches: The matches of this Competition.  # noqa: E501
@@ -32,7 +32,7 @@ class Competition(Model):
         """
         self.swagger_types = {
             'name': str,
-            'id': int,
+            'id': str,
             'is_active': bool,
             'matches': List[Match],
             'leader_board': List[BetsResult]
@@ -86,22 +86,22 @@ class Competition(Model):
         self._name = name
 
     @property
-    def id(self) -> int:
+    def id(self) -> str:
         """Gets the id of this Competition.
 
 
         :return: The id of this Competition.
-        :rtype: int
+        :rtype: str
         """
         return self._id
 
     @id.setter
-    def id(self, id: int):
+    def id(self, id: str):
         """Sets the id of this Competition.
 
 
         :param id: The id of this Competition.
-        :type id: int
+        :type id: str
         """
         if id is None:
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
