@@ -83,11 +83,9 @@ def parse_competition(url):
 
 def parse_competition_with_special_match(url, match_id):
     end = url.find('/table') if url.find('/table') != -1 else url.find('/live')
-    competition_id = url[(url.find('#')) + 2:end]
     response_result = requests.get(url=url, headers=headers)
     bp = BeautifulSoup(response_result.text, 'lxml')
     title = bp.find(attrs={'property': 'og:title'})
-    name = title.get('content')
     url = url[:(url.find('#'))]
     url_not_finished_matches = url + 'fixtures/'
     url_finished_matches = url + 'results/'
