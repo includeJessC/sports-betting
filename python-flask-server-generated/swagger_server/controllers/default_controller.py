@@ -61,7 +61,6 @@ def competitions_info_post(competition_id, id_):  # noqa: E501
     try:
         db = DataBaseManagemantSystem()
         db.add_user_to_competition(id_, competition_id)
-
     except Exception as e:
         print(e)
         return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
