@@ -5,6 +5,7 @@ import uuid
 import cryptocode
 import psycopg2
 import telebot
+import jwt
 
 passkey = os.environ.get("PASS_KEY")
 
@@ -26,26 +27,26 @@ class DataBaseManagemantSystemBot:
 
     def check_registered(self, username):
         cur = self.con.cursor()
-        request = f"SELECT COUNT(*) FROM sport_betting.private_users_info WHERE id = '{str(cryptocode.encrypt(username, passkey))}' and approved=True"
+        request = f"SELECT COUNT(*) FROM sport_betting.private_users_info WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}' and approved=True"
         cur.execute(request)
         return cur.fetchone()[0] != 0
 
     def check_has_code_or_insert(self, username):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.codes WHERE id = '{str(cryptocode.encrypt(username, passkey))}' AND created_at = (SELECT MAX(created_at) FROM sport_betting.codes WHERE id = '{str(cryptocode.encrypt(username, passkey))}')"
+        request = f"SELECT * FROM sport_betting.codes WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}' AND created_at = (SELECT MAX(created_at) FROM sport_betting.codes WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}')"
         cur.execute(request)
         ans = cur.fetchone()
         if ans is not None and len(ans) != 0:
             return ans[2]
         code = str(uuid.uuid4())
-        request = f"INSERT INTO sport_betting.codes (id, secret_code) VALUES ('{str(cryptocode.encrypt(username, passkey))}', '{code}')"
+        request = f"INSERT INTO sport_betting.codes (id, secret_code) VALUES ('{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}', '{code}')"
         cur.execute(request)
         self.con.commit()
         return code
 
     def update_password(self, name, password):
         cur = self.con.cursor()
-        request = f"UPDATE sport_betting.private_users_info SET password = '{password}' WHERE id='{str(cryptocode.encrypt(name, passkey))}'"
+        request = f"UPDATE sport_betting.private_users_info SET password = '{password}' WHERE id='{str(jwt.encode({'id': name}, passkey, algorithm='HS256'))}'"
         cur.execute(request)
         self.con.commit()
 

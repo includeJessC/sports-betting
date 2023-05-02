@@ -1,7 +1,7 @@
 import datetime
 import os
 
-import cryptocode
+import jwt
 import psycopg2
 import requests
 from flask import Flask, request, Response, redirect
@@ -26,7 +26,7 @@ class DataBaseManagemantSystemAuthor:
 
     def check_token(self, username, token):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.login_token WHERE id = '{str(cryptocode.encrypt(username, passkey))}' AND token='{token}'"
+        request = f"SELECT * FROM sport_betting.login_token WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}' AND token='{token}'"
         cur.execute(request)
         resp = cur.fetchone()
         return resp is not None and datetime.datetime.now() - resp[2] < datetime.timedelta(days=1)
