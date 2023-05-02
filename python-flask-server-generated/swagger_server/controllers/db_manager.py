@@ -152,8 +152,9 @@ class DataBaseManagemantSystem:
             request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, start_time, first_team_name, second_team_name) VALUES ('{competition_id}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}')"
         cur.execute(request)
         self.con.commit()
+        special_bets = [] if special_bets is None else special_bets
         for bet in special_bets:
-            request = f"INSERT INTO sport_betting.special_created_bets (match_id, bet_name) VALUES ('{match['id']}', '{bet}')"
+            request = f"INSERT INTO sport_betting.special_created_bets (match_id, bet_name, competition_id) VALUES ('{match['id']}', '{bet}', '{competition_id}')"
             cur.execute(request)
             self.con.commit()
         if match['parsing_ref'] is not None:
@@ -281,6 +282,13 @@ class DataBaseManagemantSystem:
     def get_competition_by_match_id(self, competition_id):
         cur = self.con.cursor()
         request = f"SELECT parsing_ref, special_id FROM sport_betting.competitions_info WHERE special_id = '{competition_id}'"
+        cur.execute(request)
+        ans = cur.fetchone()
+        return {'parsing_ref': ans[0], 'special_id': ans[1]}
+
+    def get_match_parsing_ref(self, competition_id, match_id):
+        cur = self.con.cursor()
+        request = f"SELECT parsing_ref, competition_id FROM sport_betting.matches_info WHERE competition_id = '{competition_id}' and id = '{match_id}'"
         cur.execute(request)
         ans = cur.fetchone()
         return {'parsing_ref': ans[0], 'special_id': ans[1]}

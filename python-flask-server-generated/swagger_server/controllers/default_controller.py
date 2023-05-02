@@ -3,7 +3,7 @@ import uuid
 import connexion
 import datetime
 
-from swagger_server.controllers.db_manager import DataBaseManagemantSystem, update_competition
+from swagger_server.controllers.db_manager import DataBaseManagemantSystem, update_competition, update_match
 from swagger_server.controllers.parser import parse_competition, parse_match
 from swagger_server.models.base_user_info import BaseUserInfo  # noqa: E501
 from swagger_server.models.competition import Competition  # noqa: E501
@@ -129,11 +129,11 @@ def create_competition_post(id_, body=None):  # noqa: E501
         body = CreateCompetitionBody.from_dict(connexion.request.get_json())
     try:
         if body.parsing_ref is None:
-            result = {'competition_id': '0', "name": body.name if body.name else "Default", 'is_active': False,
+            result = {'competition_id': str(uuid.uuid4()), "name": body.name if body.name else "Default", 'is_active': False,
                       'parsing_ref': None, 'ended_matches': [], 'not_ended_matches': []}
             db = DataBaseManagemantSystem()
-            db.add_competition(id_, result)
-            return Competition(result['name'], result['competition_id'], result['is_active'], [])
+            special_id = db.add_competition(id_, result)
+            return Competition(result['name'], special_id, result['is_active'], [])
         result = parse_competition(body.parsing_ref)
         if body.name:
             result['name'] = body.name
@@ -155,15 +155,15 @@ def create_competition_post(id_, body=None):  # noqa: E501
         return ErrorResponse("BadRequest", "Неправильная ссылка"), 400
 
 
-def create_match_post(id_, competion_id, body=None):  # noqa: E501
+def create_match_post(id_, competition_id, body=None):  # noqa: E501
     """create_match_post
 
     Создает новый матч. # noqa: E501
 
     :param id: 
     :type id: str
-    :param competion_id: 
-    :type competion_id: str
+    :param competition_id:
+    :type competition_id: str
     :param body: 
     :type body: dict | bytes
 
@@ -175,15 +175,16 @@ def create_match_post(id_, competion_id, body=None):  # noqa: E501
     if body.parsing_ref is None and body.first_team_name is None and body.second_team_name:
         return ErrorResponse("BadRequest", "Неправильные параметры"), 400
     if body.parsing_ref is None:
-        result = {'match': {'id': uuid.uuid4(), 'name': f'{body.first_team_name} vs {body.second_team_name}', 'start_time': datetime.datetime.now(), 'end_time': None,
+        result = {'match': {'id': str(uuid.uuid4()), 'name': f'{body.first_team_name} vs {body.second_team_name}', 'start_time': datetime.datetime.now(), 'end_time': None,
                  'team1_name': body.first_team_name, 'team2_name': body.second_team_name,
-                 'is_active': True}}
+                 'is_active': True, 'parsing_ref': None}}
     else:
         result = parse_match(body.parsing_ref)
     try:
-        db.add_match(id_, competion_id, result['match'], body.special_bets)
-        return db.get_match_info(result['match']['id'], competion_id, id_)
-    except Exception:
+        db.add_match(id_, competition_id, result['match'], body.special_bets)
+        return db.get_match_info(result['match']['id'], competition_id, id_)
+    except Exception as e:
+        print(e)
         return ErrorResponse("BadRequest", "Неправильный матч"), 400
 
 
@@ -202,9 +203,9 @@ def match_info_get(match_id, id_, competition_id):  # noqa: E501
     """
     db = DataBaseManagemantSystem()
     try:
-        compet_url = db.get_competition_by_match_id(competition_id)
+        compet_url = db.get_match_parsing_ref(competition_id, match_id)
         if compet_url['parsing_ref'] is not None:
-            update_competition(compet_url['special_id'], compet_url['parsing_ref'])
+            update_match(compet_url['special_id'], compet_url['parsing_ref'])
         return db.get_match_info(match_id, compet_url['special_id'], id_)
     except Exception as e:
         print(e)

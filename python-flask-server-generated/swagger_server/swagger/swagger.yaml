@@ -359,7 +359,7 @@ paths:
         explode: true
         schema:
           type: string
-      - name: competion_id
+      - name: competition_id
         in: query
         required: true
         style: form
