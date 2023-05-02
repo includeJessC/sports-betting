@@ -125,7 +125,7 @@ class DataBaseManagemantSystem:
         request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{special_id}', '{username}', NULL)"
         cur.execute(request)
         self.con.commit()
-        mmm.scheduler.add_job(update_competition, 'interval', hours=1, args=(special_id, competition['parsing_ref']))
+        mmm.scheduler.add_job(update_competition, 'interval', hours=1, args=(special_id, competition['parsing_ref']), id=special_id)
         return special_id
 
     def update_competition(self, competition_id, competition):
@@ -135,20 +135,25 @@ class DataBaseManagemantSystem:
         ans = cur.fetchone()
         if ans is None:
             raise Exception()
-        request = f"UPDATE sport_betting.competitions_info SET is_active={competition['is_active']} WHERE special_id='{ans[0]}'"
+        request = f"UPDATE sport_betting.competitions_info SET is_active={competition['is_active']} WHERE special_id='{ans[0]}' RETURNING is_active"
         cur.execute(request)
+        ans = cur.fetchone()
+        if ans is not None and not ans[0]:
+            mmm.scheduler.remove_job(id=competition_id)
         cur = self.con.cursor()
         for match in competition['ended_matches']:
             if match['end_time'] is None:
-                request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']}) WHERE competition_id='{ans[0]}' and id='{match['id']}'"
+                request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']}) WHERE competition_id='{competition_id}' and id='{match['id']}' RETURNING is_active"
             else:
-                request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', end_time='{match['end_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']}) WHERE competition_id='{ans[0]}' and id='{match['id']}'"
+                request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', end_time='{match['end_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']}) WHERE competition_id='{competition_id}' and id='{match['id']}' RETURNING is_active"
             cur.execute(request)
+            ans = cur.fetchone()
+            # TO_DO: обновление результатов по ставкам
         cur = self.con.cursor()
         for match in competition['not_ended_matches']:
             if match['team1_name'] is None:
                 continue
-            request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, first_team_name, second_team_name) VALUES ('{ans[0]}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}') ON CONFLICT (id, competition_id) DO UPDATE SET is_active={match['is_active']}, start_time='{match['start_time']}'"
+            request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, first_team_name, second_team_name) VALUES ('{competition_id}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}') ON CONFLICT (id, competition_id) DO UPDATE SET is_active={match['is_active']}, start_time='{match['start_time']}'"
             cur.execute(request)
         self.con.commit()
 
