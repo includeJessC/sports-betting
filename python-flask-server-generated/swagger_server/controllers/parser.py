@@ -34,7 +34,7 @@ def manager(response):
     return matches
 
 
-def manager(response, match_id):
+def manager1(response, match_id):
     data = response.text.split('¬')
     data_list = [{}]
     for item in data:
@@ -89,8 +89,8 @@ def parse_competition_with_special_match(url, match_id):
     url_finished_matches = url + 'results/'
     response_not_finished = requests.get(url=url_not_finished_matches, headers=headers)
     response_finished = requests.get(url=url_finished_matches, headers=headers)
-    finished_match = manager(response_finished, match_id)
-    not_finished_match = manager(response_not_finished, match_id)
+    finished_match = manager1(response_finished, match_id)
+    not_finished_match = manager1(response_not_finished, match_id)
     return {'match': finished_match if finished_match is not None else not_finished_match}
 
 

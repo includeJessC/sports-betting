@@ -13,4 +13,4 @@ EXPOSE 9090
 
 ENTRYPOINT ["python3"]
 
-CMD ["bot.py"]
+CMD ["-u", "bot.py"]

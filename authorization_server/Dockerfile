@@ -13,4 +13,4 @@ EXPOSE 80
 
 ENTRYPOINT ["python3"]
 
-CMD ["author.py"]
+CMD ["-u", "author.py"]

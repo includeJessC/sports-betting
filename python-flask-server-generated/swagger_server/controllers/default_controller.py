@@ -127,7 +127,7 @@ def create_competition_post(id_, body=None):  # noqa: E501
         return ErrorResponse("BadRequest", "Неправильная ссылка"), 400
 
 
-def create_match_post(id, competion_id, body=None):  # noqa: E501
+def create_match_post(id_, competion_id, body=None):  # noqa: E501
     """create_match_post
 
     Создает новый матч. # noqa: E501
@@ -161,7 +161,7 @@ def match_info_get(match_id, id):  # noqa: E501
     return 'do some magic!'
 
 
-def user_get(id):  # noqa: E501
+def user_get(id_):  # noqa: E501
     """user_get
 
     Выдача информации о пользователе # noqa: E501
@@ -171,7 +171,12 @@ def user_get(id):  # noqa: E501
 
     :rtype: UserInfo
     """
-    return 'do some magic!'
+    db = DataBaseManagemantSystem()
+    try:
+        info = db.get_user_info(id_)
+        return UserInfo(UserMeta(info['name'], info['surname'], info['password']), id_)
+    except Exception:
+        return ErrorResponse("BAD_USER", "Неправильный пользователь"), 400
 
 
 def user_login_post(body=None):  # noqa: E501
@@ -193,7 +198,7 @@ def user_login_post(body=None):  # noqa: E501
             token = db.get_user_token(body.id)
             return InlineResponse2001(token)
     except Exception:
-        return ErrorResponse("BAD_CODE", "Неправильный код"), 400
+        return ErrorResponse("BAD_USER", "Неправильный пользователь"), 400
 
 
 def user_put(id, body=None):  # noqa: E501
