@@ -117,18 +117,18 @@ def create_competition_post(id_, body=None):  # noqa: E501
         if body.name:
             result['name'] = body.name
         db = DataBaseManagemantSystem()
-        db.add_competition(id_, result)
+        special_id = db.add_competition(id_, result)
         matches = []
         for match in result['ended_matches']:
             matches.append(
                 Match(match['id'], match['name'], match['team1_name'],
                       match['team2_name'], match['team1_res'],
-                      match['team2_res'], match['is_active']))
+                      match['team2_res'], match['is_active'], start_time=match['start_time'].strftime("%H:%M %B %d, %Y") if match['start_time'] is not None else None))
         for match in result['not_ended_matches']:
             matches.append(
                 Match(match['id'], match['name'], match['team1_name'], match['team2_name'], match['team1_res'],
-                      match['team2_res'], match['is_active']))
-        return Competition(result['name'], result['competition_id'], result['is_active'], matches)
+                      match['team2_res'], match['is_active'], start_time=match['start_time'].strftime("%H:%M %B %d, %Y") if match['start_time'] is not None else None))
+        return Competition(result['name'], special_id, result['is_active'], matches)
     except Exception as e:
         print(e)
         return ErrorResponse("BadRequest", "Неправильная ссылка"), 400

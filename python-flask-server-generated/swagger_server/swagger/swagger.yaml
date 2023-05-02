@@ -503,7 +503,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         name:
           type: string
         first_team_name:
@@ -522,6 +522,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Bets'
+        start_time:
+          type: string
       example:
         user_bets:
         - bet: 2

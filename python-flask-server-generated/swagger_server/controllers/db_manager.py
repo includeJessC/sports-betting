@@ -4,6 +4,7 @@ import psycopg2
 
 import __main__ as mmm
 from swagger_server.controllers.parser import parse_competition
+from swagger_server.models.match import Match  # noqa: E501
 
 
 def update_competition(competition_id, url):
@@ -124,6 +125,7 @@ class DataBaseManagemantSystem:
         cur.execute(request)
         self.con.commit()
         mmm.scheduler.add_job(update_competition, 'interval', hours=1, args=(special_id, competition['parsing_ref']))
+        return special_id
 
     def update_competition(self, competition_id, competition):
         cur = self.con.cursor()
@@ -175,6 +177,12 @@ class DataBaseManagemantSystem:
         request = f"INSERT INTO sport_betting.match_bets (match_id, competition_id, user_id, bets) VALUES ('{match_id}', '{competition_id}', '{username}', {bets})"
         cur.execute(request)
         self.con.commit()
+
+    def get_match_info(self, match_id, competition_id):
+        cur = self.con.cursor()
+        request = f"SELECT first_team_name, second_team_name, first_team_result, second_team_result, start_time, is_active, name, id FROM sport_bettings.matches_info WHERE id='{match_id}' and competition_id='{competition_id}'"
+        cur.execute(request)
+        ans = cur.fetchone()
 
     # def get_competition(self, competition_id):
     #      cur = self.con.cursor()

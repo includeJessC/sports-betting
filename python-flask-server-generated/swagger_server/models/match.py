@@ -15,11 +15,11 @@ class Match(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: int=None, name: str=None, first_team_name: str=None, second_team_name: str=None, first_team_result: int=None, second_team_result: int=None, is_active: bool=None, bets_result: float=None, user_bets: List[Bets]=None):  # noqa: E501
+    def __init__(self, id: str=None, name: str=None, first_team_name: str=None, second_team_name: str=None, first_team_result: int=None, second_team_result: int=None, is_active: bool=None, bets_result: float=None, user_bets: List[Bets]=None, start_time: str=None):  # noqa: E501
         """Match - a model defined in Swagger
 
         :param id: The id of this Match.  # noqa: E501
-        :type id: int
+        :type id: str
         :param name: The name of this Match.  # noqa: E501
         :type name: str
         :param first_team_name: The first_team_name of this Match.  # noqa: E501
@@ -36,9 +36,11 @@ class Match(Model):
         :type bets_result: float
         :param user_bets: The user_bets of this Match.  # noqa: E501
         :type user_bets: List[Bets]
+        :param start_time: The start_time of this Match.  # noqa: E501
+        :type start_time: str
         """
         self.swagger_types = {
-            'id': int,
+            'id': str,
             'name': str,
             'first_team_name': str,
             'second_team_name': str,
@@ -46,7 +48,8 @@ class Match(Model):
             'second_team_result': int,
             'is_active': bool,
             'bets_result': float,
-            'user_bets': List[Bets]
+            'user_bets': List[Bets],
+            'start_time': str,
         }
 
         self.attribute_map = {
@@ -58,7 +61,8 @@ class Match(Model):
             'second_team_result': 'second_team_result',
             'is_active': 'is_active',
             'bets_result': 'bets_result',
-            'user_bets': 'user_bets'
+            'user_bets': 'user_bets',
+            'start_time': 'start_time',
         }
         self._id = id
         self._name = name
@@ -69,6 +73,7 @@ class Match(Model):
         self._is_active = is_active
         self._bets_result = bets_result
         self._user_bets = user_bets
+        self._start_time = start_time
 
     @classmethod
     def from_dict(cls, dikt) -> 'Match':
@@ -82,22 +87,22 @@ class Match(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self) -> int:
+    def id(self) -> str:
         """Gets the id of this Match.
 
 
         :return: The id of this Match.
-        :rtype: int
+        :rtype: str
         """
         return self._id
 
     @id.setter
-    def id(self, id: int):
+    def id(self, id: str):
         """Sets the id of this Match.
 
 
         :param id: The id of this Match.
-        :type id: int
+        :type id: str
         """
         if id is None:
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
@@ -279,3 +284,23 @@ class Match(Model):
         """
 
         self._user_bets = user_bets
+
+    @property
+    def start_time(self) -> str:
+        """Gets the id of this Match.
+
+
+        :return: The start_time of this Match.
+        :rtype: str
+        """
+        return self._start_time
+
+    @start_time.setter
+    def start_time(self, start_time: str):
+        """Sets the start_time of this Match.
+
+
+        :param start_time: The start_time of this Match.
+        :type start_time: str
+        """
+        self._start_time = start_time
