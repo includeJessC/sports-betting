@@ -1,0 +1,23 @@
+version: "3"
+services:
+  authorization_server:
+    image: annabogacheva/authorization_server
+    ports:
+      - 80:80
+    environment:
+      PASS_KEY: "${PASS_KEY}"
+
+  sport_bet_bot:
+    image: annabogacheva/sport_bet_bot
+    ports:
+      - 9090:9090
+    environment:
+      PASS_KEY: "${PASS_KEY}"
+      TELEGRAM_BOT_TOKEN: "${TELEGRAM_BOT_TOKEN}"
+
+  sport_bet_server:
+    image: annabogacheva/sport_bet_server
+    ports:
+      - 8080:8080
+    environment:
+      PASS_KEY: "${PASS_KEY}"

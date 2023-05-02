@@ -2,7 +2,6 @@ import hashlib
 import os
 import uuid
 
-import cryptocode
 import psycopg2
 import telebot
 import jwt
