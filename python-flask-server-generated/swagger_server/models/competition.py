@@ -16,7 +16,7 @@ class Competition(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, id: str=None, is_active: bool=None, matches: List[Match]=None, leader_board: List[BetsResult]=None):  # noqa: E501
+    def __init__(self, name: str=None, id: str=None, is_active: bool=None, matches: List[Match]=None, leader_board: List[BetsResult]=None, created_by: str=None):  # noqa: E501
         """Competition - a model defined in Swagger
 
         :param name: The name of this Competition.  # noqa: E501
@@ -29,13 +29,16 @@ class Competition(Model):
         :type matches: List[Match]
         :param leader_board: The leader_board of this Competition.  # noqa: E501
         :type leader_board: List[BetsResult]
+        :param created_by: The created_by of this Competition.  # noqa: E501
+        :type created_by: str
         """
         self.swagger_types = {
             'name': str,
             'id': str,
             'is_active': bool,
             'matches': List[Match],
-            'leader_board': List[BetsResult]
+            'leader_board': List[BetsResult],
+            'created_by': str,
         }
 
         self.attribute_map = {
@@ -43,13 +46,15 @@ class Competition(Model):
             'id': 'id',
             'is_active': 'is_active',
             'matches': 'matches',
-            'leader_board': 'leader_board'
+            'leader_board': 'leader_board',
+            'created_by': 'created_by',
         }
         self._name = name
         self._id = id
         self._is_active = is_active
         self._matches = matches
         self._leader_board = leader_board
+        self._created_by = created_by
 
     @classmethod
     def from_dict(cls, dikt) -> 'Competition':
@@ -84,6 +89,26 @@ class Competition(Model):
             raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
+
+    @property
+    def created_by(self) -> str:
+        """Gets the created_by of this Competition.
+
+
+        :return: The created_by of this Competition.
+        :rtype: str
+        """
+        return self._created_by
+
+    @created_by.setter
+    def created_by(self, created_by: str):
+        """Sets the created_by of this Competition.
+
+
+        :param created_by: The created_by of this Competition.
+        :type created_by: str
+        """
+        self._created_by = created_by
 
     @property
     def id(self) -> str:

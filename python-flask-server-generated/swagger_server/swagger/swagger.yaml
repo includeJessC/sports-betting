@@ -576,6 +576,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BetsResult'
+        created_by:
+          type: string
       example:
         is_active: true
         name: name

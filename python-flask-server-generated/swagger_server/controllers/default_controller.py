@@ -26,10 +26,15 @@ def competitions_get(id_):  # noqa: E501
 
     :rtype: InlineResponse200
     """
-    return 'do some magic!'
+    try:
+        db = DataBaseManagemantSystem()
+        return InlineResponse200(db.get_all_competitions(id_))
+    except Exception as e:
+        print(e)
+        return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
 
 
-def competitions_info_get(competition_id, id):  # noqa: E501
+def competitions_info_get(competition_id, id_):  # noqa: E501
     """competitions_info_get
 
     Отдает информаицю о соревновании для этого пользовтеля. # noqa: E501
@@ -41,7 +46,15 @@ def competitions_info_get(competition_id, id):  # noqa: E501
 
     :rtype: Competition
     """
-    return 'do some magic!'
+    try:
+        db = DataBaseManagemantSystem()
+        compet_url = db.get_competition_by_match_id(competition_id)
+        if compet_url['parsing_ref'] is not None:
+            update_competition(compet_url['special_id'], compet_url['parsing_ref'])
+        return db.get_competition(competition_id)
+    except Exception as e:
+        print(e)
+        return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
 
 
 def competitions_info_post(competition_id, id_):  # noqa: E501
@@ -58,7 +71,11 @@ def competitions_info_post(competition_id, id_):  # noqa: E501
     """
     try:
         db = DataBaseManagemantSystem()
+        compet_url = db.get_competition_by_match_id(competition_id)
+        if compet_url['parsing_ref'] is not None:
+            update_competition(compet_url['special_id'], compet_url['parsing_ref'])
         db.add_user_to_competition(id_, competition_id)
+        return db.get_competition(competition_id)
     except Exception as e:
         print(e)
         return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
@@ -129,7 +146,7 @@ def create_competition_post(id_, body=None):  # noqa: E501
             matches.append(
                 Match(match['id'], match['name'], match['team1_name'], match['team2_name'], match['team1_res'],
                       match['team2_res'], match['is_active'], start_time=match['start_time'].strftime("%H:%M %B %d, %Y") if match['start_time'] is not None else None))
-        return Competition(result['name'], special_id, result['is_active'], matches)
+        return Competition(result['name'], special_id, result['is_active'], matches, created_by=id_)
     except Exception as e:
         print(e)
         return ErrorResponse("BadRequest", "Неправильная ссылка"), 400
