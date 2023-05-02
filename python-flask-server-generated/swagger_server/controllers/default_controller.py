@@ -64,7 +64,7 @@ def competitions_info_post(competition_id, id_):  # noqa: E501
         return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
 
 
-def create_bet_post(id_, match_id, body=None):  # noqa: E501
+def create_bet_post(id_, match_id, competition_id, body=None):  # noqa: E501
     """create_bet_post
 
     Делает ставку. # noqa: E501
@@ -80,16 +80,17 @@ def create_bet_post(id_, match_id, body=None):  # noqa: E501
     """
     if connexion.request.is_json:
         body = CreateBetBody.from_dict(connexion.request.get_json())  # noqa: E501
-    db = DataBaseManagemantSystem
+    db = DataBaseManagemantSystem()
     try:
-        compet_url = db.get_competition_by_match_id(match_id=match_id, username=id_)
+        compet_url = db.get_competition_by_match_id(competition_id)
         if compet_url['parsing_ref'] is not None:
             update_competition(compet_url['special_id'], compet_url['parsing_ref'])
         db.check_if_match_active(match_id, compet_url['special_id'])
         db.add_bets_to_match(match_id, compet_url['special_id'], id_, connexion.request.get_json())
-    except Exception:
+        return db.get_match_info(match_id, compet_url['special_id'], id_)
+    except Exception as e:
+        print(e)
         return ErrorResponse("BadMatch", "Неправильный матч"), 400
-    return 'do some magic!'
 
 
 def create_competition_post(id_, body=None):  # noqa: E501
@@ -153,7 +154,7 @@ def create_match_post(id_, competion_id, body=None):  # noqa: E501
     return 'do some magic!'
 
 
-def match_info_get(match_id, id):  # noqa: E501
+def match_info_get(match_id, id_, competition_id):  # noqa: E501
     """match_info_get
 
     Отдает информаицю о матче для этого пользовтеля. # noqa: E501
@@ -165,7 +166,15 @@ def match_info_get(match_id, id):  # noqa: E501
 
     :rtype: Match
     """
-    return 'do some magic!'
+    db = DataBaseManagemantSystem()
+    try:
+        compet_url = db.get_competition_by_match_id(competition_id)
+        if compet_url['parsing_ref'] is not None:
+            update_competition(compet_url['special_id'], compet_url['parsing_ref'])
+        return db.get_match_info(match_id, compet_url['special_id'], id_)
+    except Exception as e:
+        print(e)
+        return ErrorResponse("BadMatch", "Неправильный матч"), 400
 
 
 def user_get(id_):  # noqa: E501

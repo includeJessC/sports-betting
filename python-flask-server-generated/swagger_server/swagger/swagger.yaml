@@ -283,6 +283,13 @@ paths:
         explode: true
         schema:
           type: string
+      - name: competition_id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -397,6 +404,13 @@ paths:
         schema:
           type: string
       - name: match_id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: competition_id
         in: query
         required: true
         style: form

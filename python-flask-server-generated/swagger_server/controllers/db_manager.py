@@ -1,3 +1,4 @@
+import json
 import uuid
 
 import psycopg2
@@ -151,15 +152,9 @@ class DataBaseManagemantSystem:
             cur.execute(request)
         self.con.commit()
 
-    def get_competition_by_match_id(self, match_id, username):
+    def get_competition_by_match_id(self, competition_id):
         cur = self.con.cursor()
-        request = f"SELECT competition_id FROM sport_betting.matches_info WHERE id = '{match_id}' AND competition_id IN (SELECT competition_id FROM sport_betting.competition_bets WHERE user_id = '{username}')"
-        cur.execute(request)
-        ans = cur.fetchone()
-        if ans is None:
-            raise Exception()
-        cur = self.con.cursor()
-        request = f"SELECT parsing_ref, special_id FROM sport_betting.competitions_info WHERE special_id = '{ans[0]}'"
+        request = f"SELECT parsing_ref, special_id FROM sport_betting.competitions_info WHERE special_id = '{competition_id}'"
         cur.execute(request)
         ans = cur.fetchone()
         return {'parsing_ref': ans[0], 'special_id': ans[1]}
@@ -174,15 +169,20 @@ class DataBaseManagemantSystem:
 
     def add_bets_to_match(self, match_id, competition_id, username, bets):
         cur = self.con.cursor()
-        request = f"INSERT INTO sport_betting.match_bets (match_id, competition_id, user_id, bets) VALUES ('{match_id}', '{competition_id}', '{username}', {bets})"
+        request = f"INSERT INTO sport_betting.match_bets (match_id, competition_id, user_id, bets) VALUES ('{match_id}', '{competition_id}', '{username}', '{json.dumps(bets)}'::json)"
         cur.execute(request)
         self.con.commit()
 
-    def get_match_info(self, match_id, competition_id):
+    def get_match_info(self, match_id, competition_id, username):
         cur = self.con.cursor()
-        request = f"SELECT first_team_name, second_team_name, first_team_result, second_team_result, start_time, is_active, name, id FROM sport_bettings.matches_info WHERE id='{match_id}' and competition_id='{competition_id}'"
+        request = f"SELECT first_team_name, second_team_name, first_team_result, second_team_result, start_time, is_active, name, id FROM sport_betting.matches_info WHERE id='{match_id}' and competition_id='{competition_id}'"
         cur.execute(request)
-        ans = cur.fetchone()
+        ans1 = cur.fetchone()
+        cur = self.con.cursor()
+        request = f"SELECT bets, result FROM sport_betting.match_bets WHERE match_id='{match_id}' and competition_id='{competition_id}' and user_id='{username}'"
+        cur.execute(request)
+        ans2 = cur.fetchone()
+        return Match(match_id, ans1[6], ans1[0], ans1[1], ans1[2], ans1[3], ans1[5], ans2[1] if ans2 is not None else None, ans2[0] if ans2 is not None else None, ans1[4])
 
     # def get_competition(self, competition_id):
     #      cur = self.con.cursor()
