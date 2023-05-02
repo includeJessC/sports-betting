@@ -2,6 +2,9 @@ import requests
 from flask import Flask, request, Response, redirect
 import psycopg2
 import datetime
+import cryptocode
+import os
+passkey = os.environ.get("PASS_KEY")
 
 app = Flask(__name__)
 SITE_NAME = 'http://127.0.0.1:8080'
@@ -20,7 +23,7 @@ class DataBaseManagemantSystemAuthor:
 
     def check_token(self, username, token):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.login_token WHERE id = '{username}' AND token='{token}'"
+        request = f"SELECT * FROM sport_betting.login_token WHERE id = '{str(cryptocode.encrypt(username, passkey))}' AND token='{token}'"
         cur.execute(request)
         resp = cur.fetchone()
         return resp is not None and datetime.datetime.now() - resp[2] < datetime.timedelta(days=1)

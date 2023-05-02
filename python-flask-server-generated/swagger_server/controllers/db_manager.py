@@ -9,6 +9,10 @@ from swagger_server.models.bets_result import BetsResult  # noqa: E501
 from swagger_server.models.competition import Competition  # noqa: E501
 from swagger_server.models.match import Match  # noqa: E501
 
+import cryptocode
+import os
+passkey = os.environ.get("PASS_KEY")
+
 
 def update_competition(competition_id, url):
     res = parse_competition(url)
@@ -36,48 +40,48 @@ class DataBaseManagemantSystem:
 
     def add_new_user(self, id, name, surname, password):
         cur = self.con.cursor()
-        request = "INSERT INTO sport_betting.users_info (id, name, surname) VALUES ('" + str(id) + "', '" + str(
+        request = "INSERT INTO sport_betting.users_info (id, name, surname) VALUES ('" + str(cryptocode.encrypt(id, passkey)) + "', '" + str(
             name) + "', '" + str(surname) + "') ON CONFLICT DO NOTHING;"
         cur.execute(request)
         self.con.commit()
         cur = self.con.cursor()
-        request = "INSERT INTO sport_betting.private_users_info (id, password) VALUES ('" + str(id) + "', '" + str(
+        request = "INSERT INTO sport_betting.private_users_info (id, password) VALUES ('" + str(cryptocode.encrypt(id, passkey)) + "', '" + str(
             password) + "') ON CONFLICT DO NOTHING;"
         cur.execute(request)
         self.con.commit()
 
     def get_user_info(self, username):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.private_users_info WHERE id = '{username}' AND approved = true"
+        request = f"SELECT * FROM sport_betting.private_users_info WHERE id = '{str(cryptocode.encrypt(username, passkey))}' AND approved = true"
         cur.execute(request)
         private_info = cur.fetchone()
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.users_info WHERE id = '{username}'"
+        request = f"SELECT * FROM sport_betting.users_info WHERE id = '{str(cryptocode.encrypt(username, passkey))}'"
         cur.execute(request)
         info = cur.fetchone()
         return {"password": private_info[1], "name": info[1], "surname": info[2]}
 
     def get_user_token(self, username):
         cur = self.con.cursor()
-        request = f"DELETE FROM sport_betting.login_token WHERE id = '{username}'"
+        request = f"DELETE FROM sport_betting.login_token WHERE id = '{str(cryptocode.encrypt(username, passkey))}'"
         cur.execute(request)
         self.con.commit()
         cur = self.con.cursor()
         token = uuid.uuid4()
-        request = f"INSERT INTO sport_betting.login_token (id, token) VALUES ('{username}', '{token}')"
+        request = f"INSERT INTO sport_betting.login_token (id, token) VALUES ('{str(cryptocode.encrypt(username, passkey))}', '{token}')"
         cur.execute(request)
         self.con.commit()
         return token
 
     def check_registered(self, username):
         cur = self.con.cursor()
-        request = f"SELECT COUNT(*) FROM sport_betting.private_users_info WHERE id = '{username}' AND approved = true"
+        request = f"SELECT COUNT(*) FROM sport_betting.private_users_info WHERE id = '{str(cryptocode.encrypt(username, passkey))}' AND approved = true"
         cur.execute(request)
         return cur.fetchone()[0] != 0
 
     def check_registeration_approve(self, username, code):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.codes WHERE id = '{username}' AND created_at = (SELECT MAX(created_at) FROM sport_betting.codes WHERE id = '{username}')"
+        request = f"SELECT * FROM sport_betting.codes WHERE id = '{str(cryptocode.encrypt(username, passkey))}' AND created_at = (SELECT MAX(created_at) FROM sport_betting.codes WHERE id = '{str(cryptocode.encrypt(username, passkey))}')"
         cur.execute(request)
         ans = cur.fetchone()
         if ans is not None:
@@ -86,33 +90,33 @@ class DataBaseManagemantSystem:
 
     def update_approved_info(self, username):
         cur = self.con.cursor()
-        request = f"UPDATE sport_betting.private_users_info SET approved = true WHERE id = '{username}'"
+        request = f"UPDATE sport_betting.private_users_info SET approved = true WHERE id = '{str(cryptocode.encrypt(username, passkey))}'"
         cur.execute(request)
         self.con.commit()
 
     def add_user_to_competition(self, competition_id, username):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.competition_bets WHERE special_id='{competition_id}' AND user_id='{username}'"
+        request = f"SELECT * FROM sport_betting.competition_bets WHERE special_id='{competition_id}' AND user_id='{str(cryptocode.encrypt(username, passkey))}'"
         cur.execute(request)
         ans = cur.fetchone()
         if ans is not None:
             raise Exception()
-        request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{competition_id}', '{username}', NULL)"
+        request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{competition_id}', '{str(cryptocode.encrypt(username, passkey))}', NULL)"
         cur.execute(request)
         self.con.commit()
 
     def add_competition(self, username, competition):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.competitions_info WHERE created_by = '{username}' AND id='{competition['competition_id']}'"
+        request = f"SELECT * FROM sport_betting.competitions_info WHERE created_by = '{str(cryptocode.encrypt(username, passkey))}' AND id='{competition['competition_id']}'"
         cur.execute(request)
         ans = cur.fetchone()
         if ans is not None:
             raise Exception()
         special_id = str(uuid.uuid4())
         if competition['parsing_ref'] is not None:
-            request = f"INSERT INTO sport_betting.competitions_info (created_by, id, name, is_active, parsing_ref, special_id) VALUES ('{username}', '{competition['competition_id']}', '{competition['name']}', {competition['is_active']}, '{competition['parsing_ref']}', '{special_id}')"
+            request = f"INSERT INTO sport_betting.competitions_info (created_by, id, name, is_active, parsing_ref, special_id) VALUES ('{str(cryptocode.encrypt(username, passkey))}', '{competition['competition_id']}', '{competition['name']}', {competition['is_active']}, '{competition['parsing_ref']}', '{special_id}')"
         else:
-            request = f"INSERT INTO sport_betting.competitions_info (created_by, id, name, is_active, special_id) VALUES ('{username}', '{competition['competition_id']}', '{competition['name']}', {competition['is_active']}, '{special_id}')"
+            request = f"INSERT INTO sport_betting.competitions_info (created_by, id, name, is_active, special_id) VALUES ('{str(cryptocode.encrypt(username, passkey))}', '{competition['competition_id']}', '{competition['name']}', {competition['is_active']}, '{special_id}')"
         cur.execute(request)
         cur = self.con.cursor()
         for match in competition['ended_matches']:
@@ -130,7 +134,7 @@ class DataBaseManagemantSystem:
             request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, first_team_name, second_team_name) VALUES ('{special_id}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}')"
             cur.execute(request)
         cur = self.con.cursor()
-        request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{special_id}', '{username}', NULL)"
+        request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{special_id}', '{str(cryptocode.encrypt(username, passkey))}', NULL)"
         cur.execute(request)
         self.con.commit()
         if competition['parsing_ref'] is not None:
@@ -141,7 +145,7 @@ class DataBaseManagemantSystem:
 
     def add_match(self, username, competition_id, match, special_bets):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.competitions_info WHERE created_by = '{username}' AND special_id='{competition_id}'"
+        request = f"SELECT * FROM sport_betting.competitions_info WHERE created_by = '{str(cryptocode.encrypt(username, passkey))}' AND special_id='{competition_id}'"
         cur.execute(request)
         ans = cur.fetchone()
         if ans is None:
@@ -192,13 +196,13 @@ class DataBaseManagemantSystem:
         for match_id in ans_matches:
             matches.append(self.get_match_info(match_id[0], competition_id, None))
         for bet in ans_bets:
-            leader_board.append(BetsResult(bet[0], bet[1]))
+            leader_board.append(BetsResult(cryptocode.decrypt(bet[0], passkey), bet[1]))
         return Competition(ans_competition[0], ans_competition[2], ans_competition[1], matches, leader_board,
-                           ans_competition[3])
+                           cryptocode.decrypt(ans_competition[3], passkey))
 
     def get_all_competitions(self, username):
         cur = self.con.cursor()
-        request = f"SELECT DISTINCT competition_id FROM sport_betting.competition_bets WHERE user_id='{username}'"
+        request = f"SELECT DISTINCT competition_id FROM sport_betting.competition_bets WHERE user_id='{str(cryptocode.encrypt(username, passkey))}'"
         cur.execute(request)
         ans_bets = cur.fetchall()
         competitions = []
@@ -303,7 +307,7 @@ class DataBaseManagemantSystem:
 
     def add_bets_to_match(self, match_id, competition_id, username, bets):
         cur = self.con.cursor()
-        request = f"INSERT INTO sport_betting.match_bets (match_id, competition_id, user_id, bets) VALUES ('{match_id}', '{competition_id}', '{username}', '{json.dumps(bets)}'::json)"
+        request = f"INSERT INTO sport_betting.match_bets (match_id, competition_id, user_id, bets) VALUES ('{match_id}', '{competition_id}', '{str(cryptocode.encrypt(username, passkey))}', '{json.dumps(bets)}'::json)"
         cur.execute(request)
         self.con.commit()
 
@@ -315,7 +319,7 @@ class DataBaseManagemantSystem:
         cur = self.con.cursor()
         ans2 = None
         if username is not None:
-            request = f"SELECT bets, result FROM sport_betting.match_bets WHERE match_id='{match_id}' and competition_id='{competition_id}' and user_id='{username}'"
+            request = f"SELECT bets, result FROM sport_betting.match_bets WHERE match_id='{match_id}' and competition_id='{competition_id}' and user_id='{str(cryptocode.encrypt(username, passkey))}'"
             cur.execute(request)
             ans2 = cur.fetchone()
         request = f"SELECT bet_name FROM sport_betting.special_created_bets WHERE match_id='{match_id}' and competition_id='{competition_id}'"
