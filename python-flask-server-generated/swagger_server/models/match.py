@@ -15,7 +15,7 @@ class Match(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, name: str=None, first_team_name: str=None, second_team_name: str=None, first_team_result: int=None, second_team_result: int=None, is_active: bool=None, bets_result: float=None, user_bets: List[Bets]=None, start_time: str=None):  # noqa: E501
+    def __init__(self, id: str=None, name: str=None, first_team_name: str=None, second_team_name: str=None, first_team_result: int=None, second_team_result: int=None, is_active: bool=None, bets_result: float=None, user_bets: List[Bets]=None, start_time: str=None, special_bets: List[str]=None):  # noqa: E501
         """Match - a model defined in Swagger
 
         :param id: The id of this Match.  # noqa: E501
@@ -38,6 +38,8 @@ class Match(Model):
         :type user_bets: List[Bets]
         :param start_time: The start_time of this Match.  # noqa: E501
         :type start_time: str
+        :param special_bets: The special_bets of this Match.  # noqa: E501
+        :type special_bets: List[str]
         """
         self.swagger_types = {
             'id': str,
@@ -50,6 +52,7 @@ class Match(Model):
             'bets_result': float,
             'user_bets': List[Bets],
             'start_time': str,
+            'special_bets': List[str],
         }
 
         self.attribute_map = {
@@ -63,6 +66,7 @@ class Match(Model):
             'bets_result': 'bets_result',
             'user_bets': 'user_bets',
             'start_time': 'start_time',
+            'special_bets': 'special_bets',
         }
         self._id = id
         self._name = name
@@ -74,6 +78,7 @@ class Match(Model):
         self._bets_result = bets_result
         self._user_bets = user_bets
         self._start_time = start_time
+        self._special_bets = special_bets
 
     @classmethod
     def from_dict(cls, dikt) -> 'Match':
@@ -304,3 +309,24 @@ class Match(Model):
         :type start_time: str
         """
         self._start_time = start_time
+
+    @property
+    def special_bets(self) -> List[str]:
+        """Gets the special_bets of this Match.
+
+
+        :return: The special_bets of this Match.
+        :rtype: List[str]
+        """
+        return self._special_bets
+
+    @special_bets.setter
+    def special_bets(self, special_bets: List[str]):
+        """Sets the special_bets of this Match.
+
+
+        :param special_bets: The user_bets of this Match.
+        :type special_bets: List[Bets]
+        """
+
+        self._special_bets = special_bets

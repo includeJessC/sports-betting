@@ -538,6 +538,10 @@ components:
             $ref: '#/components/schemas/Bets'
         start_time:
           type: string
+        special_bets:
+          type: array
+          items:
+            type: string
       example:
         user_bets:
         - bet: 2
@@ -763,12 +767,18 @@ components:
         name:
           type: string
     create_match_body:
-      required:
-      - parsing_ref
       type: object
       properties:
         parsing_ref:
           type: string
+        first_team_name:
+          type: string
+        second_team_name:
+          type: string
+        special_bets:
+          type: array
+          items:
+            type: string
     create_bet_body:
       required:
       - bets

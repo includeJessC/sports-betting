@@ -1,7 +1,10 @@
+import uuid
+
 import connexion
+import datetime
 
 from swagger_server.controllers.db_manager import DataBaseManagemantSystem, update_competition
-from swagger_server.controllers.parser import parse_competition
+from swagger_server.controllers.parser import parse_competition, parse_match
 from swagger_server.models.base_user_info import BaseUserInfo  # noqa: E501
 from swagger_server.models.competition import Competition  # noqa: E501
 from swagger_server.models.create_bet_body import CreateBetBody  # noqa: E501
@@ -166,9 +169,23 @@ def create_match_post(id_, competion_id, body=None):  # noqa: E501
 
     :rtype: Match
     """
+    db = DataBaseManagemantSystem()
     if connexion.request.is_json:
         body = CreateMatchBody.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    if body.parsing_ref is None and body.first_team_name is None and body.second_team_name:
+        return ErrorResponse("BadRequest", "Неправильные параметры"), 400
+    if body.parsing_ref is None:
+        result = {'match': {'id': uuid.uuid4(), 'name': f'{body.first_team_name} vs {body.second_team_name}', 'start_time': datetime.datetime.now(), 'end_time': None,
+                 'team1_name': body.first_team_name, 'team2_name': body.second_team_name,
+                 'is_active': True}}
+    else:
+        result = parse_match(body.parsing_ref)
+    try:
+        db.add_match(id_, competion_id, result['match'], body.special_bets)
+        return db.get_match_info(result['match']['id'], competion_id, id_)
+    except Exception:
+        return ErrorResponse("BadRequest", "Неправильный матч"), 400
+
 
 
 def match_info_get(match_id, id_, competition_id):  # noqa: E501

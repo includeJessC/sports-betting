@@ -14,20 +14,35 @@ class CreateMatchBody(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, parsing_ref: str=None):  # noqa: E501
+    def __init__(self, parsing_ref: str=None, first_team_name: str = None, second_team_name: str = None, special_bets: List[str] = None):  # noqa: E501
         """CreateMatchBody - a model defined in Swagger
 
         :param parsing_ref: The parsing_ref of this CreateMatchBody.  # noqa: E501
         :type parsing_ref: str
+        :param first_team_name: The first_team_name of this CreateMatchBody.  # noqa: E501
+        :type first_team_name: str
+        :param second_team_name: The second_team_name of this CreateMatchBody.  # noqa: E501
+        :type second_team_name: str
+        :param special_bets: The special_bets of this CreateMatchBody.  # noqa: E501
+        :type special_bets: List[str]
         """
         self.swagger_types = {
-            'parsing_ref': str
+            'parsing_ref': str,
+            'first_team_name': str,
+            'second_team_name': str,
+            'special_bets': List[str],
         }
 
         self.attribute_map = {
-            'parsing_ref': 'parsing_ref'
+            'parsing_ref': 'parsing_ref',
+            'first_team_name': 'first_team_name',
+            'second_team_name': 'second_team_name',
+            'special_bets': 'special_bets',
         }
         self._parsing_ref = parsing_ref
+        self._first_team_name = first_team_name
+        self._second_team_name = second_team_name
+        self._special_bets = special_bets
 
     @classmethod
     def from_dict(cls, dikt) -> 'CreateMatchBody':
@@ -58,7 +73,64 @@ class CreateMatchBody(Model):
         :param parsing_ref: The parsing_ref of this CreateMatchBody.
         :type parsing_ref: str
         """
-        if parsing_ref is None:
-            raise ValueError("Invalid value for `parsing_ref`, must not be `None`")  # noqa: E501
-
         self._parsing_ref = parsing_ref
+
+    @property
+    def first_team_name(self) -> str:
+        """Gets the first_team_name of this CreateMatchBody.
+
+
+        :return: The first_team_name of this CreateMatchBody.
+        :rtype: str
+        """
+        return self._first_team_name
+
+    @first_team_name.setter
+    def first_team_name(self, first_team_name: str):
+        """Sets the first_team_name of this CreateMatchBody.
+
+
+        :param first_team_name: The first_team_name of this CreateMatchBody.
+        :type first_team_name: str
+        """
+        self._first_team_name = first_team_name
+
+    @property
+    def second_team_name(self) -> str:
+        """Gets the second_team_name of this CreateMatchBody.
+
+
+        :return: The second_team_name of this CreateMatchBody.
+        :rtype: str
+        """
+        return self._second_team_name
+
+    @second_team_name.setter
+    def second_team_name(self, second_team_name: str):
+        """Sets the second_team_name of this CreateMatchBody.
+
+
+        :param second_team_name: The second_team_name of this CreateMatchBody.
+        :type second_team_name: str
+        """
+        self._second_team_name = second_team_name
+
+    @property
+    def special_bets(self) -> List[str]:
+        """Gets the special_bets of this CreateMatchBody.
+
+
+        :return: The special_bets of this CreateMatchBody.
+        :rtype: List[str]
+        """
+        return self._special_bets
+
+    @special_bets.setter
+    def special_bets(self, special_bets: List[str]):
+        """Sets the special_bets of this CreateMatchBody.
+
+
+        :param special_bets: The special_bets of this CreateMatchBody.
+        :type special_bets: str
+        """
+        self._special_bets = special_bets
