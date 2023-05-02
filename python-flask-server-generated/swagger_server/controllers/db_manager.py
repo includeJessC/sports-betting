@@ -1,6 +1,8 @@
 import json
+import os
 import uuid
 
+import cryptocode
 import psycopg2
 
 import __main__ as mmm
@@ -9,8 +11,6 @@ from swagger_server.models.bets_result import BetsResult  # noqa: E501
 from swagger_server.models.competition import Competition  # noqa: E501
 from swagger_server.models.match import Match  # noqa: E501
 
-import cryptocode
-import os
 passkey = os.environ.get("PASS_KEY")
 
 
@@ -40,12 +40,14 @@ class DataBaseManagemantSystem:
 
     def add_new_user(self, id, name, surname, password):
         cur = self.con.cursor()
-        request = "INSERT INTO sport_betting.users_info (id, name, surname) VALUES ('" + str(cryptocode.encrypt(id, passkey)) + "', '" + str(
+        request = "INSERT INTO sport_betting.users_info (id, name, surname) VALUES ('" + str(
+            cryptocode.encrypt(id, passkey)) + "', '" + str(
             name) + "', '" + str(surname) + "') ON CONFLICT DO NOTHING;"
         cur.execute(request)
         self.con.commit()
         cur = self.con.cursor()
-        request = "INSERT INTO sport_betting.private_users_info (id, password) VALUES ('" + str(cryptocode.encrypt(id, passkey)) + "', '" + str(
+        request = "INSERT INTO sport_betting.private_users_info (id, password) VALUES ('" + str(
+            cryptocode.encrypt(id, passkey)) + "', '" + str(
             password) + "') ON CONFLICT DO NOTHING;"
         cur.execute(request)
         self.con.commit()

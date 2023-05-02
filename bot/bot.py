@@ -1,15 +1,16 @@
+import hashlib
 import os
+import uuid
 
+import cryptocode
+import psycopg2
 import telebot
 
-import psycopg2
-import uuid
-import hashlib
-import cryptocode
 passkey = os.environ.get("PASS_KEY")
 
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 BOT = telebot.TeleBot(TOKEN, parse_mode=None)
+
 
 class DataBaseManagemantSystemBot:
     def __init__(self):
@@ -48,6 +49,7 @@ class DataBaseManagemantSystemBot:
         cur.execute(request)
         self.con.commit()
 
+
 @BOT.message_handler(commands=['start', 'help'])
 def send_welcome(message):
     """
@@ -56,6 +58,7 @@ def send_welcome(message):
     BOT.reply_to(message,
                  'Мои команды: \n /get_code - выдаст код для регистрации, /get_password - поможет восстановить пароль')
 
+
 @BOT.message_handler(commands=['get_code'])
 def send_code(message):
     """
@@ -63,11 +66,12 @@ def send_code(message):
     """
     db = DataBaseManagemantSystemBot()
     try:
-      if db.check_registered(message.from_user.username):
+        if db.check_registered(message.from_user.username):
+            BOT.reply_to(message,
+                         'Вы уже зарегистрированы')
+            return
         BOT.reply_to(message,
-                     'Вы уже зарегистрированы')
-        return
-      BOT.reply_to(message, f'Введите код регистрации на странице: {db.check_has_code_or_insert(message.from_user.username)}')
+                     f'Введите код регистрации на странице: {db.check_has_code_or_insert(message.from_user.username)}')
     except Exception:
         BOT.reply_to(message,
                      f'Что-то пошло нет: проверьте правильность введенного ника на сайте')
@@ -87,13 +91,15 @@ def send_password(message):
     """
     db = DataBaseManagemantSystemBot()
     try:
-      if db.check_registered(message.from_user.username):
-        BOT.reply_to(message, f'Придумайте новый пароль: ')
-        BOT.register_next_step_handler(message, get_password)
+        if db.check_registered(message.from_user.username):
+            BOT.reply_to(message, f'Придумайте новый пароль: ')
+            BOT.register_next_step_handler(message, get_password)
     except Exception:
         BOT.reply_to(message,
                      f'Что-то пошло нет: проверьте правильность введенного ника на сайте')
     BOT.reply_to(message,
                  f'Что-то пошло нет: проверьте правильность введенного ника на сайте')
+
+
 if __name__ == '__main__':
     BOT.infinity_polling()

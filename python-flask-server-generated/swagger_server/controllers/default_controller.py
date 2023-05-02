@@ -1,7 +1,7 @@
+import datetime
 import uuid
 
 import connexion
-import datetime
 
 from swagger_server.controllers.db_manager import DataBaseManagemantSystem, update_competition, update_match
 from swagger_server.controllers.parser import parse_competition, parse_match
@@ -129,7 +129,8 @@ def create_competition_post(id_, body=None):  # noqa: E501
         body = CreateCompetitionBody.from_dict(connexion.request.get_json())
     try:
         if body.parsing_ref is None:
-            result = {'competition_id': str(uuid.uuid4()), "name": body.name if body.name else "Default", 'is_active': False,
+            result = {'competition_id': str(uuid.uuid4()), "name": body.name if body.name else "Default",
+                      'is_active': False,
                       'parsing_ref': None, 'ended_matches': [], 'not_ended_matches': []}
             db = DataBaseManagemantSystem()
             special_id = db.add_competition(id_, result)
@@ -144,11 +145,15 @@ def create_competition_post(id_, body=None):  # noqa: E501
             matches.append(
                 Match(match['id'], match['name'], match['team1_name'],
                       match['team2_name'], match['team1_res'],
-                      match['team2_res'], match['is_active'], start_time=match['start_time'].strftime("%H:%M %B %d, %Y") if match['start_time'] is not None else None))
+                      match['team2_res'], match['is_active'],
+                      start_time=match['start_time'].strftime("%H:%M %B %d, %Y") if match[
+                                                                                        'start_time'] is not None else None))
         for match in result['not_ended_matches']:
             matches.append(
                 Match(match['id'], match['name'], match['team1_name'], match['team2_name'], match['team1_res'],
-                      match['team2_res'], match['is_active'], start_time=match['start_time'].strftime("%H:%M %B %d, %Y") if match['start_time'] is not None else None))
+                      match['team2_res'], match['is_active'],
+                      start_time=match['start_time'].strftime("%H:%M %B %d, %Y") if match[
+                                                                                        'start_time'] is not None else None))
         return Competition(result['name'], special_id, result['is_active'], matches, created_by=id_)
     except Exception as e:
         print(e)
@@ -175,9 +180,10 @@ def create_match_post(id_, competition_id, body=None):  # noqa: E501
     if body.parsing_ref is None and body.first_team_name is None and body.second_team_name:
         return ErrorResponse("BadRequest", "Неправильные параметры"), 400
     if body.parsing_ref is None:
-        result = {'match': {'id': str(uuid.uuid4()), 'name': f'{body.first_team_name} vs {body.second_team_name}', 'start_time': datetime.datetime.now(), 'end_time': None,
-                 'team1_name': body.first_team_name, 'team2_name': body.second_team_name,
-                 'is_active': True, 'parsing_ref': None}}
+        result = {'match': {'id': str(uuid.uuid4()), 'name': f'{body.first_team_name} vs {body.second_team_name}',
+                            'start_time': datetime.datetime.now(), 'end_time': None,
+                            'team1_name': body.first_team_name, 'team2_name': body.second_team_name,
+                            'is_active': True, 'parsing_ref': None}}
     else:
         result = parse_match(body.parsing_ref)
     try:
@@ -186,7 +192,6 @@ def create_match_post(id_, competition_id, body=None):  # noqa: E501
     except Exception as e:
         print(e)
         return ErrorResponse("BadRequest", "Неправильный матч"), 400
-
 
 
 def match_info_get(match_id, id_, competition_id):  # noqa: E501

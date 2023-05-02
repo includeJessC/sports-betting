@@ -1,13 +1,16 @@
+import datetime
+import os
+
+import cryptocode
+import psycopg2
 import requests
 from flask import Flask, request, Response, redirect
-import psycopg2
-import datetime
-import cryptocode
-import os
+
 passkey = os.environ.get("PASS_KEY")
 
 app = Flask(__name__)
 SITE_NAME = 'http://127.0.0.1:8080'
+
 
 class DataBaseManagemantSystemAuthor:
     def __init__(self):
@@ -27,6 +30,7 @@ class DataBaseManagemantSystemAuthor:
         cur.execute(request)
         resp = cur.fetchone()
         return resp is not None and datetime.datetime.now() - resp[2] < datetime.timedelta(days=1)
+
 
 @app.route('/<path:path>', methods=['GET', 'POST', 'DELETE'])
 def proxy(path):
