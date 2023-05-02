@@ -1,6 +1,6 @@
 import connexion
 
-from swagger_server.controllers.db_manager import DataBaseManagemantSystem
+from swagger_server.controllers.db_manager import DataBaseManagemantSystem, update_competition
 from swagger_server.controllers.parser import parse_competition
 from swagger_server.models.base_user_info import BaseUserInfo  # noqa: E501
 from swagger_server.models.competition import Competition  # noqa: E501
@@ -56,8 +56,6 @@ def competitions_info_post(competition_id, id_):  # noqa: E501
 
     :rtype: Competition
     """
-    if connexion.request.is_json:
-        body = CreateCompetitionBody.from_dict(connexion.request.get_json())
     try:
         db = DataBaseManagemantSystem()
         db.add_user_to_competition(id_, competition_id)
@@ -66,7 +64,7 @@ def competitions_info_post(competition_id, id_):  # noqa: E501
         return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
 
 
-def create_bet_post(id, match_id, body=None):  # noqa: E501
+def create_bet_post(id_, match_id, body=None):  # noqa: E501
     """create_bet_post
 
     Делает ставку. # noqa: E501
@@ -82,6 +80,15 @@ def create_bet_post(id, match_id, body=None):  # noqa: E501
     """
     if connexion.request.is_json:
         body = CreateBetBody.from_dict(connexion.request.get_json())  # noqa: E501
+    db = DataBaseManagemantSystem
+    try:
+        compet_url = db.get_competition_by_match_id(match_id=match_id, username=id_)
+        if compet_url['parsing_ref'] is not None:
+            update_competition(compet_url['special_id'], compet_url['parsing_ref'])
+        db.check_if_match_active(match_id, compet_url['special_id'])
+        db.add_bets_to_match(match_id, compet_url['special_id'], id_, connexion.request.get_json())
+    except Exception:
+        return ErrorResponse("BadMatch", "Неправильный матч"), 400
     return 'do some magic!'
 
 

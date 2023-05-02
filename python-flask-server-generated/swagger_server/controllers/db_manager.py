@@ -82,7 +82,7 @@ class DataBaseManagemantSystem:
 
     def add_user_to_competition(self, competition_id, username):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.competition_bets WHERE special_id='{competition_id}'"
+        request = f"SELECT * FROM sport_betting.competition_bets WHERE special_id='{competition_id}' AND user_id='{username}'"
         cur.execute(request)
         ans = cur.fetchone()
         if ans is not None:
@@ -147,6 +147,33 @@ class DataBaseManagemantSystem:
                 continue
             request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, first_team_name, second_team_name) VALUES ('{ans[0]}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}') ON CONFLICT (id, competition_id) DO UPDATE SET is_active={match['is_active']}, start_time='{match['start_time']}'"
             cur.execute(request)
+        self.con.commit()
+
+    def get_competition_by_match_id(self, match_id, username):
+        cur = self.con.cursor()
+        request = f"SELECT competition_id FROM sport_betting.matches_info WHERE id = '{match_id}' AND competition_id IN (SELECT competition_id FROM sport_betting.competition_bets WHERE user_id = '{username}')"
+        cur.execute(request)
+        ans = cur.fetchone()
+        if ans is None:
+            raise Exception()
+        cur = self.con.cursor()
+        request = f"SELECT parsing_ref, special_id FROM sport_betting.competitions_info WHERE special_id = '{ans[0]}'"
+        cur.execute(request)
+        ans = cur.fetchone()
+        return {'parsing_ref': ans[0], 'special_id': ans[1]}
+
+    def check_if_match_active(self, match_id, competition_id):
+        cur = self.con.cursor()
+        request = f"SELECT is_active FROM sport_betting.matches_info WHERE id = '{match_id}' AND competition_id = '{competition_id}'"
+        cur.execute(request)
+        ans = cur.fetchone()
+        if ans is None or not ans[0]:
+            raise Exception()
+
+    def add_bets_to_match(self, match_id, competition_id, username, bets):
+        cur = self.con.cursor()
+        request = f"INSERT INTO sport_betting.match_bets (match_id, competition_id, user_id, bets) VALUES ('{match_id}', '{competition_id}', '{username}', {bets})"
+        cur.execute(request)
         self.con.commit()
 
     # def get_competition(self, competition_id):
