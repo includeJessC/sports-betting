@@ -2,6 +2,7 @@ version: "3"
 services:
   authorization_server:
     image: annabogacheva/authorization_server
+    network_mode: "host"
     ports:
       - 80:80
     environment:
@@ -9,6 +10,7 @@ services:
 
   sport_bet_bot:
     image: annabogacheva/sport_bet_bot
+    network_mode: "host"
     ports:
       - 9090:9090
     environment:
@@ -17,6 +19,7 @@ services:
 
   sport_bet_server:
     image: annabogacheva/sport_bet_server
+    network_mode: "host"
     ports:
       - 8080:8080
     environment:
