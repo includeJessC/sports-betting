@@ -17,7 +17,7 @@ from swagger_server.models.match import Match  # noqa: E501
 from swagger_server.models.register_approve import RegisterApprove  # noqa: E501
 from swagger_server.models.user_info import UserInfo  # noqa: E501
 from swagger_server.models.user_meta import UserMeta  # noqa: E501
-
+import logging
 
 def competitions_get(id_):  # noqa: E501
     """competitions_get
@@ -248,30 +248,38 @@ def user_login_post(body=None):  # noqa: E501
     db = DataBaseManagemantSystem()
     if connexion.request.is_json:
         body = BaseUserInfo.from_dict(connexion.request.get_json())  # noqa: E501
+    logging.warning(body)
     try:
         info = db.get_user_info(body.id)
         if info['password'] == body.password:
             token = db.get_user_token(body.id)
             return InlineResponse2001(token)
     except Exception:
-        return ErrorResponse("BAD_USER", "Неправильный пользователь"), 400
+        return ErrorResponse("BAD_BO", "Неправильный пользователь"), 400
+    return ErrorResponse("BAD_BO", "Неправильный пользователь"), 400
 
 
-def user_put(id, body=None):  # noqa: E501
+def user_put(id_, body=None):  # noqa: E501
     """user_put
 
     Изменение информации о пользователе. # noqa: E501
 
-    :param id: 
-    :type id: str
+    :param id_:
+    :type id_: str
     :param body: 
     :type body: dict | bytes
 
     :rtype: UserInfo
     """
+    db = DataBaseManagemantSystem()
     if connexion.request.is_json:
         body = UserMeta.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    try:
+        db.update_user_info(id_, body)
+        info = db.get_user_info(id_)
+        return UserInfo(UserMeta(info['name'], info['surname'], info['password']), id_)
+    except Exception:
+        return ErrorResponse("BAD_USER", "Неправильный пользователь"), 400
 
 
 def user_register_approve_post(body=None):  # noqa: E501

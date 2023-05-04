@@ -62,11 +62,30 @@ class DataBaseManagemantSystem:
         request = f"SELECT * FROM sport_betting.private_users_info WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}' AND approved = true"
         cur.execute(request)
         private_info = cur.fetchone()
+        print(private_info)
         cur = self.con.cursor()
         request = f"SELECT * FROM sport_betting.users_info WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}'"
         cur.execute(request)
         info = cur.fetchone()
+        print(info)
         return {"password": private_info[1], "name": info[1], "surname": info[2]}
+
+    def update_user_info(self, username, user_meta):
+        if user_meta.password:
+            cur = self.con.cursor()
+            request = f"UPDATE sport_betting.private_users_info SET password = '{user_meta.password}' WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}'"
+            cur.execute(request)
+            self.con.commit()
+        if user_meta.name:
+            cur = self.con.cursor()
+            request = f"UPDATE sport_betting.users_info SET name = '{user_meta.name}' WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}'"
+            cur.execute(request)
+            self.con.commit()
+        if user_meta.surname:
+            cur = self.con.cursor()
+            request = f"UPDATE sport_betting.users_info SET surname = '{user_meta.surname}' WHERE id = '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}'"
+            cur.execute(request)
+            self.con.commit()
 
     def get_user_token(self, username):
         cur = self.con.cursor()

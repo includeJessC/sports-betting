@@ -83,7 +83,7 @@ def send_code(message):
 
 def get_password(message):
     db = DataBaseManagemantSystemBot()
-    command = str(hashlib.sha256(message.text))
+    command = str(hashlib.sha256(message.text.encode()).hexdigest())
     db.update_password(message.from_user.username, command)
     BOT.reply_to(message, 'Ваш пароль обновлен')
 
@@ -98,6 +98,7 @@ def send_password(message):
         if db.check_registered(message.from_user.username):
             BOT.reply_to(message, f'Придумайте новый пароль: ')
             BOT.register_next_step_handler(message, get_password)
+            return
     except Exception:
         BOT.reply_to(message,
                      f'Что-то пошло нет: проверьте правильность введенного ника на сайте')
