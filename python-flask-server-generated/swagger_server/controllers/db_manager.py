@@ -12,6 +12,10 @@ from swagger_server.models.competition import Competition  # noqa: E501
 from swagger_server.models.match import Match  # noqa: E501
 
 passkey = os.environ.get("PASS_KEY")
+username = os.environ.get("DB_USER")
+db_name = os.environ.get("DB_NAME")
+us_password = os.environ.get("DB_PASSWORD")
+db_host = os.environ.get("DB_HOST")
 
 
 def update_competition(competition_id, url):
@@ -29,9 +33,10 @@ def update_match(competition_id, url):
 class DataBaseManagemantSystem:
     def __init__(self):
         self.con = psycopg2.connect(
-            database="postgres",
-            user="aabogacheva",
-            password="Stack_073A",
+            database=db_name,
+            user=username,
+            password=us_password,
+            host=db_host,
         )
         self.cur = self.con.cursor()
 

@@ -10,14 +10,18 @@ passkey = os.environ.get("PASS_KEY")
 
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 BOT = telebot.TeleBot(TOKEN, parse_mode=None)
-
+username = os.environ.get("DB_USER")
+db_name = os.environ.get("DB_NAME")
+us_password = os.environ.get("DB_PASSWORD")
+db_host = os.environ.get("DB_HOST")
 
 class DataBaseManagemantSystemBot:
     def __init__(self):
         self.con = psycopg2.connect(
-            database="postgres",
-            user="aabogacheva",
-            password="Stack_073A",
+            database=db_name,
+            user=username,
+            password=us_password,
+            host=db_host,
         )
         self.cur = self.con.cursor()
 

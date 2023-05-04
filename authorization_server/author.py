@@ -7,6 +7,10 @@ import requests
 from flask import Flask, request, Response, redirect
 
 passkey = os.environ.get("PASS_KEY")
+username = os.environ.get("DB_USER")
+db_name = os.environ.get("DB_NAME")
+us_password = os.environ.get("DB_PASSWORD")
+db_host = os.environ.get("DB_HOST")
 
 app = Flask(__name__)
 SITE_NAME = 'http://127.0.0.1:8080'
@@ -15,9 +19,10 @@ SITE_NAME = 'http://127.0.0.1:8080'
 class DataBaseManagemantSystemAuthor:
     def __init__(self):
         self.con = psycopg2.connect(
-            database="postgres",
-            user="aabogacheva",
-            password="Stack_073A",
+            database=db_name,
+            user=username,
+            host=db_host,
+            password=us_password,
         )
         self.cur = self.con.cursor()
 
