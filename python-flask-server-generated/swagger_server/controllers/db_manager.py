@@ -160,7 +160,7 @@ class DataBaseManagemantSystem:
             request = f"INSERT INTO sport_betting.matches_info (competition_id, id, name, is_active, parsing_ref, start_time, first_team_name, second_team_name) VALUES ('{special_id}', '{match['id']}', '{match['name']}', {match['is_active']}, '{match['parsing_ref']}', '{match['start_time']}', '{match['team1_name']}', '{match['team2_name']}')"
             cur.execute(request)
         cur = self.con.cursor()
-        request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}', NULL)"
+        request = f"INSERT INTO sport_betting.competition_bets (competition_id, user_id, result) VALUES ('{special_id}', '{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}', NULL)"
         cur.execute(request)
         self.con.commit()
         if competition['parsing_ref'] is not None:
@@ -199,9 +199,10 @@ class DataBaseManagemantSystem:
             request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', end_time='{match['end_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']}) WHERE competition_id='{competition_id}' and id='{match['id']}' RETURNING is_active"
         cur.execute(request)
         ans = cur.fetchone()
-        if ans is not None and not ans[0]:
+        if ans is not None and not match['is_active']:
             self.update_bets_result(competition_id, match)
-            mmm.scheduler.remove_job(job_id=f"{competition_id}_{match['id']}")
+            if mmm.scheduler.get_job(job_id=f"{competition_id}_{match['id']}"):
+                mmm.scheduler.remove_job(job_id=f"{competition_id}_{match['id']}")
         self.con.commit()
 
     def get_competition(self, competition_id):
@@ -289,8 +290,9 @@ class DataBaseManagemantSystem:
         request = f"UPDATE sport_betting.competitions_info SET is_active={competition['is_active']} WHERE special_id='{ans[0]}' RETURNING is_active"
         cur.execute(request)
         ans = cur.fetchone()
-        if ans is not None and not ans[0]:
-            mmm.scheduler.remove_job(job_id=competition_id)
+        if ans is not None and not competition['is_active']:
+            if mmm.scheduler.get_job(job_id=competition_id):
+                mmm.scheduler.remove_job(job_id=competition_id)
         cur = self.con.cursor()
         for match in competition['ended_matches']:
             if match['end_time'] is None:

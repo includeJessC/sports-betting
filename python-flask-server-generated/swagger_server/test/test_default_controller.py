@@ -30,7 +30,7 @@ class TestDefaultController(BaseTestCase):
         """
         query_string = [('id', 'id_example')]
         response = self.client.open(
-            '/competitions',
+            '/competitions?id=annjjjk',
             method='GET',
             query_string=query_string)
         self.assert200(response,

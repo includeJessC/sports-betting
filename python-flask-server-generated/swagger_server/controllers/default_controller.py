@@ -33,7 +33,7 @@ def competitions_get(id_):  # noqa: E501
         db = DataBaseManagemantSystem()
         return InlineResponse200(db.get_all_competitions(id_))
     except Exception as e:
-        print(e)
+        logging.warning(e)
         return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
 
 
@@ -56,7 +56,7 @@ def competitions_info_get(competition_id, id_):  # noqa: E501
             update_competition(compet_url['special_id'], compet_url['parsing_ref'])
         return db.get_competition(competition_id)
     except Exception as e:
-        print(e)
+        logging.warning(e)
         return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
 
 
@@ -80,7 +80,7 @@ def competitions_info_post(competition_id, id_):  # noqa: E501
         db.add_user_to_competition(id_, competition_id)
         return db.get_competition(competition_id)
     except Exception as e:
-        print(e)
+        logging.warning(e)
         return ErrorResponse("BadRequest", "Что-то пошло не так"), 400
 
 
@@ -109,7 +109,7 @@ def create_bet_post(id_, match_id, competition_id, body=None):  # noqa: E501
         db.add_bets_to_match(match_id, compet_url['special_id'], id_, connexion.request.get_json())
         return db.get_match_info(match_id, compet_url['special_id'], id_)
     except Exception as e:
-        print(e)
+        logging.warning(e)
         return ErrorResponse("BadMatch", "Неправильный матч"), 400
 
 
@@ -156,7 +156,7 @@ def create_competition_post(id_, body=None):  # noqa: E501
                                                                                         'start_time'] is not None else None))
         return Competition(result['name'], special_id, result['is_active'], matches, created_by=id_)
     except Exception as e:
-        print(e)
+        logging.warning(e)
         return ErrorResponse("BadRequest", "Неправильная ссылка"), 400
 
 
@@ -190,7 +190,7 @@ def create_match_post(id_, competition_id, body=None):  # noqa: E501
         db.add_match(id_, competition_id, result['match'], body.special_bets)
         return db.get_match_info(result['match']['id'], competition_id, id_)
     except Exception as e:
-        print(e)
+        logging.warning(e)
         return ErrorResponse("BadRequest", "Неправильный матч"), 400
 
 
@@ -213,7 +213,7 @@ def match_info_get(match_id, id_, competition_id):  # noqa: E501
             update_match(compet_url['special_id'], compet_url['parsing_ref'])
         return db.get_match_info(match_id, compet_url['special_id'], id_)
     except Exception as e:
-        print(e)
+        logging.warning(e)
         return ErrorResponse("BadMatch", "Неправильный матч"), 400
 
 
