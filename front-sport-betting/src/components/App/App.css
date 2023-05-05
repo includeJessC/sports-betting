@@ -1,0 +1,129 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.l3_64 {
+	overflow:hidden;
+}
+.e3_64 {
+	background-color:rgba(5.312500633299351, 6.906252913177013, 21.25000063329935, 1);
+	width:1440px;
+	height:980px;
+	position:absolute;
+}
+.e3_65 {
+	background-color:rgba(24.402081593871117, 28.39088335633278, 56.31249949336052, 1);
+	width:1440px;
+	height:85px;
+	position:absolute;
+	left:0px;
+	top:0px;
+}
+.e3_66 {
+	color:rgba(255, 53.124994933605194, 53.124994933605194, 1);
+	width:177px;
+	height:58px;
+	position:absolute;
+	left:135px;
+	top:12px;
+	font-family:Dela Gothic One;
+	text-align:left;
+	font-size:40px;
+	letter-spacing:0;
+}
+.e3_67 {
+	background-color:rgba(255, 53.124994933605194, 53.124994933605194, 1);
+	width:139px;
+	height:37px;
+	position:absolute;
+	left:1166px;
+	top:24px;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
+}
+.e3_68 {
+	color:rgba(255, 255, 255, 1);
+	width:99px;
+	height:17px;
+	position:absolute;
+	left:20px;
+	top:10px;
+	font-family:Montserrat;
+	text-align:left;
+	font-size:14px;
+	letter-spacing:0;
+}
+.e3_69 {
+	background-color:rgba(203.68124574422836, 207.3023146390915, 226.31249696016312, 1);
+	width:78px;
+	height:37px;
+	position:absolute;
+	left:1058px;
+	top:24px;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
+}
+.e3_70 {
+	color:rgba(24.402081593871117, 28.39088335633278, 56.31249949336052, 1);
+	width:38px;
+	height:17px;
+	position:absolute;
+	left:20px;
+	top:10px;
+	font-family:Montserrat;
+	text-align:left;
+	font-size:14px;
+	letter-spacing:0;
+}
+.e3_71 {
+	color:rgba(255, 255, 255, 1);
+	width:626px;
+	height:96px;
+	position:absolute;
+	left:407px;
+	top:300px;
+	font-family:Montserrat;
+	text-align:center;
+	font-size:20px;
+	letter-spacing:0;
+}
+
