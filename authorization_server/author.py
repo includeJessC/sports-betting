@@ -37,11 +37,16 @@ class DataBaseManagemantSystemAuthor:
         return resp is not None and datetime.datetime.now() - resp[2] < datetime.timedelta(days=1)
 
 
-@app.route('/<path:path>', methods=['GET', 'POST', 'DELETE'])
+@app.route('/', defaults={'path': ''}, methods=['GET', 'POST'])
+@app.route('/<path:path>', methods=['GET', 'POST'])
 def proxy(path):
     db = DataBaseManagemantSystemAuthor()
     global SITE_NAME
-    body = request.get_json()
+    print("HOP")
+    try:
+        body = request.get_json()
+    except Exception:
+        body = None
     token = None
     username = None
     for (name, value) in request.headers:
@@ -63,9 +68,9 @@ def proxy(path):
     if request.method == 'GET':
         print(f'{SITE_NAME}/{path}?{request.query_string.decode()}')
         if len(request.query_string.decode()) != 0:
-            resp = requests.get(f'{SITE_NAME}/{path}?{request.query_string.decode()}', json=body)
+            resp = requests.request(url=f'{SITE_NAME}/{path}?{request.query_string.decode()}', method=request.method, json=body)
         else:
-            resp = requests.get(f'{SITE_NAME}/{path}', json=body)
+            resp = requests.request(url=f'{SITE_NAME}/{path}', method=request.method, json=body)
         excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
         headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
         response = Response(resp.content, resp.status_code, headers)
@@ -74,9 +79,9 @@ def proxy(path):
         print(f'{SITE_NAME}/{path}?{request.query_string.decode()}')
         print("THIS IS POST")
         if len(request.query_string.decode()) != 0:
-            resp = requests.post(f'{SITE_NAME}/{path}?{request.query_string.decode()}', json=body)
+            resp = requests.request(url=f'{SITE_NAME}/{path}?{request.query_string.decode()}', method=request.method, json=body)
         else:
-            resp = requests.post(f'{SITE_NAME}/{path}', json=body)
+            resp = requests.request(url=f'{SITE_NAME}/{path}', method=request.method, json=body)
         excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
         headers = [(name, value) for (name, value) in resp.raw.headers.items() if name.lower() not in excluded_headers]
         response = Response(resp.content, resp.status_code, headers)

@@ -122,7 +122,7 @@ class DataBaseManagemantSystem:
 
     def add_user_to_competition(self, competition_id, username):
         cur = self.con.cursor()
-        request = f"SELECT * FROM sport_betting.competition_bets WHERE special_id='{competition_id}' AND user_id='{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}'"
+        request = f"SELECT * FROM sport_betting.competition_bets WHERE competition_id='{competition_id}' AND user_id='{str(jwt.encode({'id': username}, passkey, algorithm='HS256'))}'"
         cur.execute(request)
         ans = cur.fetchone()
         if ans is not None:
