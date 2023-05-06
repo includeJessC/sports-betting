@@ -5,6 +5,7 @@ import uuid
 import psycopg2
 import telebot
 import jwt
+import hmac
 
 passkey = os.environ.get("PASS_KEY")
 
@@ -83,7 +84,7 @@ def send_code(message):
 
 def get_password(message):
     db = DataBaseManagemantSystemBot()
-    command = str(hashlib.sha256(message.text.encode()).hexdigest())
+    command = str(hmac.new(passkey.encode("utf-8"), message.text.encode("utf-8"), hashlib.sha256).hexdigest())
     db.update_password(message.from_user.username, command)
     BOT.reply_to(message, 'Ваш пароль обновлен')
 

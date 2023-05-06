@@ -1,7 +1,7 @@
 import './styles.css';
 import {useNavigate} from "react-router-dom"
 import React, {useState} from "react";
-import {loginUser} from '../../network/requests.ts';
+import axios from "../../network/axios.config";
 
 function Register() {
     const [username, setUserName] = useState('');
@@ -14,7 +14,14 @@ function Register() {
       navigate('/');
     }
     const handleApprove = () => {
-      navigate('/approve');
+        sessionStorage.setItem('username', username)
+        if (password !== repeat_password) {
+            alert("Пароли не сходятся")
+            return
+        }
+        axios.post('/user_register', {'id': username, 'user_meta': {'name': name, 'surname': surname, 'password': password}
+     }).then((resp) => {if (resp.status !== 200) {alert(resp.data.text); return;} navigate('/approve');}).catch(function (error) {
+    if (error.response) alert(error.data.text) })
     }
   return (
       <body>
@@ -36,7 +43,7 @@ function Register() {
               </div>
               <div className="e3_17"><span className="e3_18">Пароль</span>
 
-                  <input className="e3_19" type="text" id="name" name="name" required minLength="4" maxLength="8"
+                  <input className="e3_19" type="password" id="name" name="name" required minLength="4" maxLength="8"
                          size="12" value={password} onChange={(e) => setPassword(e.target.value)}></input>
               </div>
               <div className="e3_20">
@@ -54,7 +61,7 @@ function Register() {
                          size="12" value={name} onChange={(e) => setName(e.target.value)}></input>
               </div>
               <div className="e3_31"><span className="e3_32">Повторите пароль</span>
-                  <input className="e3_33" type="text2" id="name2" name="name2" required minLength="4" maxLength="12"
+                  <input className="e3_33" type="password" id="name2" name="name2" required minLength="4" maxLength="12"
                          size="12" value={repeat_password} onChange={(e) => setRepeatPassword(e.target.value)}></input>
               </div>
               <button onClick={handleBack} className="e3_34"><span className="e3_35">Назад</span></button>

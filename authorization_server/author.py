@@ -62,9 +62,9 @@ def proxy(path):
     print("ALL")
     print(request.method)
     if (token is None or username is None or not db.check_token(username, token)) and path.find(
-            '/register') == -1 and path.find('login') == -1:
+            'register') == -1 and path.find('login') == -1:
         print("redirect")
-        return redirect(f'{SITE_NAME}/user_login')
+        return redirect('http://51.250.21.113:3000/login')
     if request.method == 'GET':
         print(f'{SITE_NAME}/{path}?{request.query_string.decode()}')
         if len(request.query_string.decode()) != 0:

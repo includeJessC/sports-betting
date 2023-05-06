@@ -1,17 +1,22 @@
 import './styles.css';
 import {useNavigate} from "react-router-dom"
 import React, {useState} from "react";
-import {loginUser} from '../../network/requests.ts';
+import axios from "../../network/axios.config";
+import CryptoJS from "crypto-js";
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [token, setToken] = useState('');
     const navigate = useNavigate();
     const handleLogin = () => {
-      localStorage.setItem('username', username);
-      let response = loginUser(username, password);
-      localStorage.setItem('token', response.token)
-      navigate('/');
+        console.log(CryptoJS.HmacSHA256(password, "KONICHIWA").toString(CryptoJS.enc.Hex))
+        sessionStorage.setItem('username', username)
+        axios.post('/user_login', {
+            "id": username, "password": CryptoJS.HmacSHA256(password, "KONICHIWA").toString(CryptoJS.enc.Hex)
+        }).then((resp) => {setToken(resp.data.token); })
+        sessionStorage.setItem('token', token);
+        if (!sessionStorage.getItem('token')) alert("Неверные данные")
     }
   return (
       <body>
@@ -34,7 +39,7 @@ function Login() {
                          size="12" value={username} onChange={(e) => setUsername(e.target.value)}></input>
               </div>
               <div className="e1_56"><span className="e1_57">Пароль</span>
-                  <input className="e1_58" type="text" id="name" name="name" required minLength="4" maxLength="8"
+                  <input className="e1_58" type="password" id="name" name="name" required minLength="4" maxLength="8"
                          size="12" value={password} onChange={(e) => setPassword(e.target.value)}></input>
 
               </div>

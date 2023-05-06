@@ -6,7 +6,11 @@ const axios = axiosLib.create({
     headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
-    }
+    },
+    validateStatus: function (status) {
+
+            return status >= 200 && status <= 503;
+        },
 });
 
 axios.interceptors.request.use((config) => {

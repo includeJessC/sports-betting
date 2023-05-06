@@ -10,6 +10,7 @@ function App() {
         navigate('/register')
     }
   return (// !localStorage.getItem('token') || !localStorage.getItem('id') ?
+      <body>
           <div className="e3_64">
               <div className="e3_65"></div>
               <span className="e3_66">Ставки</span>
@@ -18,6 +19,7 @@ function App() {
       проектом студентки третьего курса образовательной программы “Прикладная математика и информатика” НИУ ВШЭ
       Богачевой Анны Андреевны</span>
           </div>
+          </body>
   );
 }
 
