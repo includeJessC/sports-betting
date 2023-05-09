@@ -8,7 +8,7 @@ function RegisterApprove() {
     const [code, setCode] = useState('');
     const handleRegisterApprove = () => {
         axios.post('/user_register_approve', {
-            "id": sessionStorage.getItem("username"), "code": code
+            "id": sessionStorage.getItem("username"), "secret_code": code
         }).then((resp) => {if (resp.status !== 200) {alert(resp.data.text); return;} window.confirm("Вы зарегистрированы, войдите!");navigate('/login'); })
     }
     const handleRegister = () => {
@@ -30,8 +30,8 @@ function RegisterApprove() {
               <span className="e3_83">Введите код подтверждения из @sportingbettingbot</span>
               <button onClick={handleRegisterApprove} className="e3_84"><span className="e3_85">Готово</span></button>
               <div className="e3_86">
-                  <input className="e3_87" type="text" id="name" name="name" required minLength="4" maxLength="8"
-                         size="12" value={code} onChange={(e) => setCode(e.target.value)}></input>
+                  <input className="e3_87" type="text" id="name" name="name" required minLength="4" maxLength="50"
+                         size="50" value={code} onChange={(e) => setCode(e.target.value)}></input>
               </div>
               <button onClick={handleRegister} className="e3_88"><span className="e3_89">Назад</span></button>
           </div>

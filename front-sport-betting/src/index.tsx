@@ -6,6 +6,7 @@ import App from './components/App/App.js';
 import Login from "./components/Login/Login.js";
 import Register from "./components/Register/Register.js";
 import RegisterApprove from "./components/RegisterApprove/RegisterApprove.js";
+import Competitions from "./components/Competitions/Competitions.js"
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     {
         path: '/approve',
         element: <RegisterApprove/>
+    },
+    {
+        path: '/competitions',
+        element: <Competitions/>
     }
 ]
 );

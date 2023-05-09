@@ -22,7 +22,7 @@
 	position:absolute;
 	left:135px;
 	top:12px;
-	font-family: Dela Gothic One, serif;
+	font-family: Dela Gothic One, sans-serif;
 	text-align:left;
 	font-size:40px;
 	letter-spacing:0;
@@ -46,7 +46,7 @@
 	position:absolute;
 	left:20px;
 	top:10px;
-	font-family: Montserrat, serif;
+	font-family: Montserrat, sans-serif;
 	text-align:left;
 	font-size:14px;
 	letter-spacing:0;
@@ -70,7 +70,7 @@
 	position:absolute;
 	left:20px;
 	top:10px;
-	font-family:Montserrat;
+	font-family:Montserrat, sans-serif;
 	text-align:left;
 	font-size:14px;
 	letter-spacing:0;
@@ -82,7 +82,7 @@
 	position:absolute;
 	left:407px;
 	top:300px;
-	font-family:Montserrat;
+	font-family:Montserrat, sans-serif;
 	text-align:center;
 	font-size:20px;
 	letter-spacing:0;
@@ -133,7 +133,7 @@
 	position:absolute;
 	left:30px;
 	top:264px;
-	font-family:Commissioner;
+	font-family:Commissioner, sans-serif;
 	text-align:left;
 	font-size:14px;
 	letter-spacing:0;
@@ -145,7 +145,7 @@
 	position:absolute;
 	left:30px;
 	top:30px;
-	font-family:Montserrat;
+	font-family:Montserrat, sans-serif;
 	text-align:left;
 	font-size:20px;
 	letter-spacing:0;
@@ -164,12 +164,12 @@
 	position:absolute;
 	left:0px;
 	top:0px;
-	font-family:Commissioner;
+	font-family:Commissioner, sans-serif;
 	text-align:left;
 	font-size:16px;
 	letter-spacing:0;
 }
-.1_55 { 
+.l1_55 {
 	border:1px solid rgba(5.312500633299351, 6.906252913177013, 21.25000063329935, 1);
 }
 .e1_55 { 
@@ -197,7 +197,7 @@
 	position:absolute;
 	left:0px;
 	top:0px;
-	font-family:Commissioner;
+	font-family:Commissioner, sans-serif;
 	text-align:left;
 	font-size:16px;
 	letter-spacing:0;
@@ -259,7 +259,7 @@
 	position:absolute;
 	left:20px;
 	top:10px;
-	font-family:Montserrat;
+	font-family:Montserrat, sans-serif;
 	text-align:left;
 	font-size:14px;
 	letter-spacing:0;

@@ -2,6 +2,7 @@ import './styles.css';
 import {useNavigate} from "react-router-dom"
 import React, {useState} from "react";
 import axios from "../../network/axios.config";
+import CryptoJS from "crypto-js";
 
 function Register() {
     const [username, setUserName] = useState('');
@@ -19,7 +20,7 @@ function Register() {
             alert("Пароли не сходятся")
             return
         }
-        axios.post('/user_register', {'id': username, 'user_meta': {'name': name, 'surname': surname, 'password': password}
+        axios.post('/user_register', {'id': username, 'user_meta': {'name': name, 'surname': surname, 'password': CryptoJS.HmacSHA256(password, "KONICHIWA").toString(CryptoJS.enc.Hex)}
      }).then((resp) => {if (resp.status !== 200) {alert(resp.data.text); return;} navigate('/approve');}).catch(function (error) {
     if (error.response) alert(error.data.text) })
     }
@@ -38,12 +39,12 @@ function Register() {
               <div className="e3_12"></div>
               <span className="e3_13">Регистрация</span>
               <div className="e3_14"><span className="e3_15">Телеграм</span>
-                  <input className="e3_16" type="text" id="name" name="name" required minLength="4" maxLength="8"
+                  <input className="e3_16" type="text" id="name" name="name" required minLength="4" maxLength="20"
                          size="12" value={username} onChange={(e) => setUserName(e.target.value)}></input>
               </div>
               <div className="e3_17"><span className="e3_18">Пароль</span>
 
-                  <input className="e3_19" type="password" id="name" name="name" required minLength="4" maxLength="8"
+                  <input className="e3_19" type="password" id="name" name="name" required minLength="4" maxLength="20"
                          size="12" value={password} onChange={(e) => setPassword(e.target.value)}></input>
               </div>
               <div className="e3_20">
@@ -53,15 +54,15 @@ function Register() {
               </div>
               <button className="e3_23" onClick={handleApprove}><span className="e3_24">Продолжить</span></button>
               <div className="e3_25"><span className="e3_26">Фамилия</span>
-                  <input className="e3_27" type="text2" id="name2" name="name2" required minLength="4" maxLength="8"
+                  <input className="e3_27" type="text2" id="name2" name="name2" required minLength="4" maxLength="20"
                          size="12" value={surname} onChange={(e) => setSurname(e.target.value)}></input>
               </div>
               <div className="e3_28"><span className="e3_29">Имя</span>
-                  <input className="e3_30" type="text2" id="name2" name="name2" required minLength="4" maxLength="8"
+                  <input className="e3_30" type="text2" id="name2" name="name2" required minLength="4" maxLength="20"
                          size="12" value={name} onChange={(e) => setName(e.target.value)}></input>
               </div>
               <div className="e3_31"><span className="e3_32">Повторите пароль</span>
-                  <input className="e3_33" type="password" id="name2" name="name2" required minLength="4" maxLength="12"
+                  <input className="e3_33" type="password" id="name2" name="name2" required minLength="4" maxLength="20"
                          size="12" value={repeat_password} onChange={(e) => setRepeatPassword(e.target.value)}></input>
               </div>
               <button onClick={handleBack} className="e3_34"><span className="e3_35">Назад</span></button>
