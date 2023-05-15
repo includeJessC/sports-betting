@@ -7,9 +7,9 @@ function Competitions() {
     const navigate = useNavigate();
     const getCompetions = () => {
         console.log(sessionStorage.getItem('token'))
+        console.log(sessionStorage.getItem('username'))
         let token = sessionStorage.getItem('token');
         let id = sessionStorage.getItem('username');
-        console.log(sessionStorage.getItem('token'))
         axios.get('/competitions', {params: {id}, headers: {"X-Token": token, "X-Username": id}}).then((resp) => { return resp.data.competitions})
     }
     getCompetions();

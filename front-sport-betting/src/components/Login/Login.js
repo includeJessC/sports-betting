@@ -12,7 +12,7 @@ function Login() {
         sessionStorage.setItem('username', username);
         axios.post('/user_login', {
             "id": username, "password": CryptoJS.HmacSHA256(password, "KONICHIWA").toString(CryptoJS.enc.Hex)
-        }).then(resp => {sessionStorage.setItem('token', resp.data.token); if (sessionStorage.getItem('token') == null) alert("Неверные данные"); console.log(sessionStorage.getItem('token')); if (resp.status !== 200) {alert(resp.data.text); return;} navigate('/competitions');})
+        }).then(resp => {if (resp.data.token !== null) {sessionStorage.setItem('token', resp.data.token)} if (sessionStorage.getItem('token') == null) alert("Неверные данные"); console.log(sessionStorage.getItem('token')); if (resp.status !== 200) {alert(resp.data.text); return;} navigate('/competitions');})
     }
   return (
       <body>

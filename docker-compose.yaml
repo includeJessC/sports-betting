@@ -3,10 +3,9 @@ services:
   authorization_server:
     image: annabogacheva/authorization_server
     network_mode: "host"
-    ports:
-      - 80:80
     environment:
       PASS_KEY: "${PASS_KEY}"
+      TELEGRAM_BOT_TOKEN: "${TELEGRAM_BOT_TOKEN}"
       DB_USER: "${DB_USER}"
       DB_NAME: "${DB_NAME}"
       DB_PASSWORD: "${DB_PASSWORD}"
@@ -15,8 +14,6 @@ services:
   sport_bet_bot:
     image: annabogacheva/sport_bet_bot
     network_mode: "host"
-    ports:
-      - 9090:9090
     environment:
       PASS_KEY: "${PASS_KEY}"
       TELEGRAM_BOT_TOKEN: "${TELEGRAM_BOT_TOKEN}"
@@ -28,10 +25,9 @@ services:
   sport_bet_server:
     image: annabogacheva/sport_bet_server
     network_mode: "host"
-    ports:
-      - 8080:8080
     environment:
       PASS_KEY: "${PASS_KEY}"
+      TELEGRAM_BOT_TOKEN: "${TELEGRAM_BOT_TOKEN}"
       DB_USER: "${DB_USER}"
       DB_NAME: "${DB_NAME}"
       DB_PASSWORD: "${DB_PASSWORD}"
