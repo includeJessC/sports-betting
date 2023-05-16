@@ -1,0 +1,32 @@
+version: "3"
+services:
+  authorization_server:
+    image: annabogacheva/authorization_server
+    network_mode: "host"
+    environment:
+      PASS_KEY: "password"
+      DB_USER: "aabogacheva"
+      DB_NAME: "postgres"
+      DB_PASSWORD: "Stack_073A"
+      DB_HOST: "0.0.0.0"
+
+  sport_bet_server:
+    image: annabogacheva/sport_bet_server
+    network_mode: "host"
+    environment:
+      PASS_KEY: "password"
+      DB_USER: "aabogacheva"
+      DB_NAME: "postgres"
+      DB_PASSWORD: "Stack_073A"
+      DB_HOST: "0.0.0.0"
+
+  postgres:
+    image: postgres:13.3
+    volumes:
+      - ./data/application/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "aabogacheva"
+      POSTGRES_PASSWORD: "Stack_073A"
+    ports:
+      - "5432:5432"

@@ -31,6 +31,8 @@ def competitions_get(id_):  # noqa: E501
     """
     try:
         db = DataBaseManagemantSystem()
+        if not db.check_registered(id_):
+            return ErrorResponse("BadRequest", "Пользователь не найден"), 404
         return InlineResponse200(db.get_all_competitions(id_))
     except Exception as e:
         logging.warning(e)
@@ -51,6 +53,8 @@ def competitions_info_get(competition_id, id_):  # noqa: E501
     """
     try:
         db = DataBaseManagemantSystem()
+        if not db.check_registered(id_):
+            return ErrorResponse("BadRequest", "Пользователь не найден"), 404
         compet_url = db.get_competition_by_match_id(competition_id)
         if compet_url['parsing_ref'] is not None:
             update_competition(compet_url['special_id'], compet_url['parsing_ref'])
