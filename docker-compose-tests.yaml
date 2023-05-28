@@ -30,3 +30,13 @@ services:
       POSTGRES_PASSWORD: "Stack_073A"
     ports:
       - "5432:5432"
+
+  tests:
+    build:
+      context: ./tests
+      dockerfile: Dockerfile
+    image: annabogacheva/tests:latest
+    depends_on:
+      - authorization_server
+      - sport_bet_server
+      - postgres

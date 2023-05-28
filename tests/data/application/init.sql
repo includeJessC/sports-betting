@@ -95,4 +95,4 @@ INSERT INTO sport_betting.private_users_info (id, password, approved) VALUES ('l
 INSERT INTO sport_betting.codes (id, secret_code) VALUES ('pok', 'value');
 INSERT INTO sport_betting.login_token (id, token) VALUES ('lol', 'qw'), ('kek', 'qw');
 INSERT INTO sport_betting.competitions_info (id, name, start_time, end_time, is_active, parsing_ref, created_by, special_id) VALUES ('1', '1', now(), NULL, true, NULL, 'lol', '1');
-INSERT INTO sport_betting.matches_info (competition_id, id, name, start_time, end_time, first_team_name, second_team_name, first_team_result, second_team_result, parsing_ref, is_active) VALUES ('1', '1', '1',now(), NULL, '1', '2', 0, 1, NULL. false);
+INSERT INTO sport_betting.matches_info (competition_id, id, name, start_time, end_time, first_team_name, second_team_name, first_team_result, second_team_result, parsing_ref, is_active) VALUES ('1', '1', '1',now(), NULL, '1', '2', 0, 1, NULL, false );
