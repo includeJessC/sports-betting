@@ -6,11 +6,15 @@ import axios from "../../network/axios.config";
 function Competitions() {
     const navigate = useNavigate();
     const getCompetions = () => {
-        console.log(sessionStorage.getItem('token'))
+        console.log(localStorage.getItem('token'))
         console.log(sessionStorage.getItem('username'))
-        let token = sessionStorage.getItem('token');
+        let toke = localStorage.getItem('token');
+        while (toke === null) {
+            toke = localStorage.getItem('token');
+        }
+        console.log(localStorage.getItem('token'))
         let id = sessionStorage.getItem('username');
-        axios.get('/competitions', {params: {id}, headers: {"X-Token": token, "X-Username": id}}).then((resp) => { return resp.data.competitions})
+        axios.get('/competitions', {params: {id}, headers: {"X-Token": toke, "X-Username": id}}).then((resp) => { return resp.data.competitions})
     }
     getCompetions();
   return (

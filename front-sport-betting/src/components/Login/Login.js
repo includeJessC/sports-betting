@@ -7,12 +7,16 @@ import CryptoJS from "crypto-js";
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [token, setToken] = useState('');
     const navigate = useNavigate();
     const handleLogin = () => {
         sessionStorage.setItem('username', username);
+        let token = null;
         axios.post('/user_login', {
             "id": username, "password": CryptoJS.HmacSHA256(password, "KONICHIWA").toString(CryptoJS.enc.Hex)
-        }).then(resp => {if (resp.data.token !== null) {sessionStorage.setItem('token', resp.data.token)} if (sessionStorage.getItem('token') == null) alert("Неверные данные"); console.log(sessionStorage.getItem('token')); if (resp.status !== 200) {alert(resp.data.text); return;} navigate('/competitions');})
+        }).then(resp => {if (resp.data.token !== null) {token = resp.data.token} if (token == null) alert("Неверные данные");console.log(resp.data.token); console.log(token); if (resp.status !== 200) {alert(resp.data.text);}})
+        localStorage.setItem('token', token);
+        navigate('/competitions');
     }
   return (
       <body>

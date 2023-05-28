@@ -10,7 +10,7 @@ CREATE TABLE "sport_betting"."users_info" (
 CREATE TABLE "sport_betting"."private_users_info" (
   "id" text UNIQUE NOT NULL,
   "password" text NOT NULL,
-  "approved" text,
+  "approved" boolean,
   PRIMARY KEY ("id")
 );
 
@@ -90,16 +90,7 @@ ALTER TABLE "sport_betting"."competitions_info" ADD FOREIGN KEY ("created_by") R
 
 ALTER TABLE "sport_betting"."matches_info" ADD FOREIGN KEY ("competition_id") REFERENCES "sport_betting"."competitions_info" ("special_id");
 
-ALTER TABLE "sport_betting"."match_bets" ADD FOREIGN KEY ("match_id") REFERENCES "sport_betting"."matches_info" ("id");
-
-ALTER TABLE "sport_betting"."match_bets" ADD FOREIGN KEY ("user_id") REFERENCES "sport_betting"."users_info" ("id");
-
-ALTER TABLE "sport_betting"."match_bets" ADD FOREIGN KEY ("competition_id") REFERENCES "sport_betting"."matches_info" ("competition_id");
-
-ALTER TABLE "sport_betting"."special_created_bets" ADD FOREIGN KEY ("match_id") REFERENCES "sport_betting"."matches_info" ("id");
-
-ALTER TABLE "sport_betting"."special_created_bets" ADD FOREIGN KEY ("competition_id") REFERENCES "sport_betting"."matches_info" ("competition_id");
-
-ALTER TABLE "sport_betting"."competition_bets" ADD FOREIGN KEY ("competition_id") REFERENCES "sport_betting"."competitions_info" ("id");
-
-ALTER TABLE "sport_betting"."competition_bets" ADD FOREIGN KEY ("user_id") REFERENCES "sport_betting"."match_bets" ("user_id");
+INSERT INTO sport_betting.users_info (id, name, surname) VALUES ('lol', '123', '123'), ('pok', '123', '123');
+INSERT INTO sport_betting.private_users_info (id, password, approved) VALUES ('lol', '123', true), ('pok', '123', false);
+INSERT INTO sport_betting.codes (id, secret_code) VALUES ('pok', 'value');
+INSERT INTO sport_betting.login_token (id, token) VALUES ('lol', 'qw');

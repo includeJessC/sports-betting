@@ -258,8 +258,10 @@ def user_login_post(body=None):  # noqa: E501
         if info['password'] == body.password:
             token = db.get_user_token(body.id)
             return InlineResponse2001(token)
-    except Exception:
+    except Exception as e:
+        logging.warning(e)
         return ErrorResponse("BAD_BO", "Неправильный пользователь"), 400
+    logging.warning("USER NOT FOUND")
     return ErrorResponse("BAD_BO", "Неправильный пользователь"), 400
 
 
@@ -305,7 +307,7 @@ def user_register_approve_post(body=None):  # noqa: E501
         db.update_approved_info(body.id)
         info = db.get_user_info(body.id)
         return UserInfo(id=body.id, user_meta=UserMeta(info['name'], info['surname'], info['password']))
-    return ErrorResponse("BAD_CODE", "Неправильный код"), 400
+    return ErrorResponse("BAD_CODE", "Неправильный код"), 404
 
 
 def user_register_post(body=None):  # noqa: E501
