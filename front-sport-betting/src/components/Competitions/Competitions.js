@@ -40,20 +40,22 @@ export function getActiveCompetitions(competitions) {
     return res
 }
 
-
 function Competitions() {
     const navigate = useNavigate();
     const handleCreate = async () => {
         navigate('/create_competitions');
     }
-    const [value, setValue] = useState('')
+    const [valueF, setValueF] = useState(true)
     const competitions = useLoaderData();
     let competitions_res = competitions;
-    const changeCompetitions = (value) => {
-        if (!value) {
+    const changeCompetitions = () => {
+        console.log(valueF)
+        if (!valueF) {
             competitions_res = competitions;
+            return;
         }
        competitions_res = getActiveCompetitions(competitions);
+        console.log(competitions_res);
     }
   return (
       <body>
@@ -61,12 +63,12 @@ function Competitions() {
     <div class="e1_5"></div>
     <div class="e1_6"></div><span class="e1_7">Ставки</span><a href="" class="e1_8">telegram_nick</a>
 
-      <button onClick={handleCreate} class="e1_12"><span class="e1_13">Создать соревнование</span></button><div class="e1_14"><input type="checkbox" value="Только действующие" name="Только действующие"  id="active"/><label
-      htmlFor="active" value={value} onChange={(e) => {setValue(e.target.value); changeCompetitions(e.target.value)}}>Только действующие</label></div>
+      <button onClick={handleCreate} class="e1_12"><span class="e1_13">Создать соревнование</span></button><div class="e1_14"><input type="checkbox" name="Только действующие"  id="active" onChange={(e) => {setValueF(!valueF); changeCompetitions()}}/><label
+      htmlFor="active">Только действующие</label></div>
 
   <div class="e1_40">
 
-   <table border="1">
+   <table border="1" class="result">
 
     <caption><div class="e1_180">Соревнования</div></caption>
    <tr>
@@ -78,7 +80,7 @@ function Competitions() {
     <th></th>
    </tr>
        {competitions_res.map((elem, index) => {
-                            return <tr>
+                            return <tr className="kek">
                                 <td>
                                     <div className="e1_289">{index + 1}</div>
                                 </td>

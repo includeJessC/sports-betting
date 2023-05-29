@@ -58,7 +58,8 @@ function CompetitionsCreate() {
         <div class="e22_137"></div>
       </div>
     </div>
-    <div class="e22_138"><span class="e22_139">Создать соревнование</span></div><span class="e22_140"><input type="checkbox"></input></span>
+    <div class="e22_138"><span class="e22_139">Создать соревнование</span></div><span class="e22_140"><input type="checkbox" value="Только действующие" name="Только действующие"  id="active"/><label
+      htmlFor="active">Только действующие</label></span>
 
 
      <div class="e1_40">
