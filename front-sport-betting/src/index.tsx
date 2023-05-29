@@ -6,7 +6,9 @@ import App from './components/App/App.js';
 import Login from "./components/Login/Login.js";
 import Register from "./components/Register/Register.js";
 import RegisterApprove from "./components/RegisterApprove/RegisterApprove.js";
-import Competitions from "./components/Competitions/Competitions.js"
+import Competitions, {loader as competitionsLoader} from "./components/Competitions/Competitions.js";
+// @ts-ignore
+import CompetitionsCreate, {loader as crcompetitionsLoader} from "./components/CompetitionCreate/CompetitionCreate.js";
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
@@ -29,7 +31,13 @@ const router = createBrowserRouter([
     },
     {
         path: '/competitions',
+        loader: competitionsLoader,
         element: <Competitions/>
+    },
+    {
+        path: '/create_competitions',
+        loader: crcompetitionsLoader,
+        element: <CompetitionsCreate/>
     }
 ]
 );

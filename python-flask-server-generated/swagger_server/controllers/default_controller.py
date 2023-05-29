@@ -30,6 +30,7 @@ def competitions_get(id_):  # noqa: E501
     :rtype: InlineResponse200
     """
     try:
+        
         db = DataBaseManagemantSystem()
         if not db.check_registered(id_):
             return ErrorResponse("BadRequest", "Пользователь не найден"), 404
