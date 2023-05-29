@@ -114,6 +114,12 @@ def test_create_competition_and_match():
     assert len(response.json()['matches']) != 0
 
 
+def test_create_bet():
+    response = requests.post("http://192.168.65.4:8080/create/bet?id=kek&match_id=1&competition_id=2", json={
+        "bets": [{"name": "first_team_result", "bet": 1}, {"name": "second_team_result", "bet": 1}]})
+    assert response.status_code == 200
+
+
 def test_competitions_get_bad_path():
     response = requests.get("http://192.168.65.4:8080/competitions?id=lol1")
     assert response.status_code == 404
