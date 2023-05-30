@@ -9,6 +9,7 @@ import Register from "./components/Register/Register.js";
 import RegisterApprove from "./components/RegisterApprove/RegisterApprove.js";
 import Matches, {loader as matchesLoader} from "./components/Matches/Matches.js"
 import EndedMatch, {loader as endedLoader} from "./components/EndedMatch/EndedMatch.js"
+import ActiveMatch, {loader as activeLoader} from "./components/ActiveMatch/ActiveMatch.js"
 import Competitions, {loader as competitionsLoader} from "./components/Competitions/Competitions.js";
 // @ts-ignore
 import CompetitionsCreate, {loader as crcompetitionsLoader} from "./components/CompetitionCreate/CompetitionCreate.js";
@@ -56,6 +57,11 @@ const router = createBrowserRouter([
                         path: '/competitions/:compId/ended/:matchId',
                         element: <EndedMatch/>,
                         loader: endedLoader,
+                    },
+    {
+                        path: '/competitions/:compId/active/:matchId',
+                        element: <ActiveMatch/>,
+                        loader: activeLoader,
                     }
 
 ]

@@ -41,6 +41,7 @@ function EndedMatch() {
         navigate('/create_competitions');
     }
     const match = useLoaderData();
+    if (typeof(match.user_bets) == "undefined") match.user_bets = []
     let id = sessionStorage.getItem('username');
     let name_comp = sessionStorage.getItem("comp_name");
   return (
@@ -109,7 +110,7 @@ function EndedMatch() {
       <div class="e8_201"><span class="e8_202">{match.second_team_result}</span></div>
     </div>
 
-    <div class="e8_203"></div><a href="" div class="e8_204">Назад</a><span class="e8_205"><img src={Vector5} alt="" height="15" width="15"></img>  На этот матч больше нельзя ставить
+    <div class="e8_203"></div><a href="/competitions" div class="e8_204">Назад</a><span class="e8_205"><img src={Vector5} alt="" height="15" width="15"></img>  На этот матч больше нельзя ставить
       ставки</span>
     <div class="e8_206">
       <div class="e8_207">

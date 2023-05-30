@@ -106,11 +106,11 @@ function CompetitionsCreate() {
       </a>
       <button onClick={makeComp} class="e22_186"><span class="e22_187">Готово</span></button>
       <div class="e22_188"><span class="e22_189">Название</span>
-        <input class="e22_190" type="text2" id="name2" name="name2" required minlength="4" maxlength="80"
+        <input class="e22_190" type="text2" id="name2" name="name2" required minlength="4" maxlength="80"  color="black"
           size="12" value={nameComp} onChange={(e) => setNameComp(e.target.value)}></input>
       </div>
       <div class="e22_192"><span class="e22_193">Ссылка на парсинг</span>
-        <input class="e22_194" type="text2" id="name2" name="name2" required minlength="4" maxlength="80"
+        <input class="e22_194" type="text2" id="name2" name="name2" required minlength="4" maxlength="80" color="black"
           size="12" value={ref} onChange={(e) => setRef(e.target.value)}></input>
     </div>
   </div>
