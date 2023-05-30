@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import uuid
 
@@ -27,7 +28,7 @@ def update_competition(competition_id, url):
 def update_match(competition_id, url):
     res = parse_match(url)
     db = DataBaseManagemantSystem()
-    db.update_match(competition_id, res)
+    db.update_match(competition_id, res['match'][0])
 
 
 class DataBaseManagemantSystem:
@@ -196,14 +197,16 @@ class DataBaseManagemantSystem:
         if match['end_time'] is None:
             request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']}) WHERE competition_id='{competition_id}' and id='{match['id']}' RETURNING is_active"
         else:
-            request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', end_time='{match['end_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']}) WHERE competition_id='{competition_id}' and id='{match['id']}' RETURNING is_active"
+            logging.warning("end time is not none")
+            request = f"UPDATE sport_betting.matches_info SET is_active={match['is_active']}, start_time='{match['start_time']}', end_time='{match['end_time']}', first_team_result={match['team1_res']}, second_team_result={match['team2_res']} WHERE competition_id='{competition_id}' and id='{match['id']}' RETURNING is_active"
         cur.execute(request)
+        self.con.commit()
         ans = cur.fetchone()
+        logging.warning("excecute")
         if ans is not None and not match['is_active']:
             self.update_bets_result(competition_id, match)
             if mmm.scheduler.get_job(job_id=f"{competition_id}_{match['id']}"):
                 mmm.scheduler.remove_job(job_id=f"{competition_id}_{match['id']}")
-        self.con.commit()
 
     def get_competition(self, competition_id):
         cur = self.con.cursor()
@@ -252,25 +255,34 @@ class DataBaseManagemantSystem:
             user_bet_2 = 0
             for bet in bets_json['bets']:
                 if bet['name'] == 'first_team_result':
-                    user_bet_1 = bet['bet']
+                    user_bet_1 = int(bet['bet'])
                 if bet['name'] == 'second_team_result':
-                    user_bet_2 = bet['bet']
+                    user_bet_2 = int(bet['bet'])
             users_bets.append([user_bet_1, user_bet_2, user[0], 0, 0, 0])
         coefs = [0., 0., 0.]
-        for item in users_bets:
-            if (match['team1_res'] - match['team2_res'] >= 0 and item[0] - item[1] >= 0) or (
-                    match['team1_res'] - match['team2_res'] < 0 and item[0] - item[1] < 0):
+        if len(users_bets) == 0:
+            return
+        logging.warning(match)
+        logging.warning(users_bets)
+        for i in (0, len(users_bets)):
+            if (int(match['team1_res']) - int(match['team2_res']) >= 0 and users_bets[i][0] - users_bets[i][1] >= 0) or (
+                    int(match['team1_res']) - int(match['team2_res']) < 0 and users_bets[i][0] - users_bets[i][1] < 0):
                 coefs[0] += 1
-                item[3] = 10
-            if (match['team1_res'] - match['team2_res'] == item[0] - item[1]) or (
-                    match['team1_res'] - match['team2_res'] == item[0] - item[1]):
+                users_bets[i][3] = 10
+            if (int(match['team1_res']) - int(match['team2_res']) == users_bets[i][0] - users_bets[i][1]) or (
+                    int(match['team1_res']) - int(match['team2_res']) == users_bets[i][0] - users_bets[i][1]):
                 coefs[1] += 1
-                item[4] = 10
-            if match['team1_res'] - match['team2_res'] == item[0] - item[1]:
+                users_bets[i][4] = 10
+            if int(match['team1_res']) - int(match['team2_res']) == users_bets[i][0] - users_bets[i][1]:
                 coefs[2] += 1
-                item[5] = 10
+                users_bets[i][5] = 10
+        division = len(users_bets) if len(users_bets) != 0 else 1
+        logging.warning(users_bets)
+        logging.warning(coefs)
         for i in (0, 3):
-            coefs[i] = (len(users_bets) - coefs[i]) / len(users_bets)
+            coefs[i] = (len(users_bets) - coefs[i]) / division
+        logging.warning(users_bets)
+        logging.warning(coefs)
         for item in users_bets:
             request = f"UPDATE sport_betting.match_bets SET result={item[3] * coefs[0] + item[4] * coefs[1] + item[5] * coefs[2]} WHERE match_id='{match['id']}' AND competition_id='{competition_id}' AND user_id='{item[2]}'"
             cur.execute(request)
@@ -353,6 +365,7 @@ class DataBaseManagemantSystem:
         request = f"SELECT bet_name FROM sport_betting.special_created_bets WHERE match_id='{match_id}' and competition_id='{competition_id}'"
         cur.execute(request)
         ans3 = cur.fetchall()
+        ans3 = ans3 if ans3 is not None else []
         special_bets = []
         for b in ans3:
             special_bets.append(b[0])

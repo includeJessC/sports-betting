@@ -45,14 +45,12 @@ function CompetitionsCreate() {
             alert("Соревнование успешно создано")
         }
     }
-    const handleComp = () => {
-       navigate('/competitions');
-    }
+    let id = sessionStorage.getItem('username');
   return (
       <body>
   <div class="e22_130">
     <div class="e22_131"></div>
-    <div class="e22_132"></div><span class="e22_133">Ставки</span><span class="e22_134">telegram_nick</span>
+    <div class="e22_132"></div><span class="e22_133">Ставки</span><span class="e22_134">{id}</span>
     <div class="e22_135">
       <div class="e22_136">
         <div class="e22_137"></div>
@@ -100,12 +98,12 @@ function CompetitionsCreate() {
 
     <div class="e22_180">
       <div class="e22_181"></div><span class="e22_182">Создание соревнования</span>
-      <button onClick={handleComp} class="e22_183">
+      <a href="/competitions" class="e22_183">
         <div class="e22_184">
           <img src={Vector} alt="" height="15" width="15"></img>
           <div class="e22_185"></div>
         </div>
-      </button>
+      </a>
       <button onClick={makeComp} class="e22_186"><span class="e22_187">Готово</span></button>
       <div class="e22_188"><span class="e22_189">Название</span>
         <input class="e22_190" type="text2" id="name2" name="name2" required minlength="4" maxlength="80"

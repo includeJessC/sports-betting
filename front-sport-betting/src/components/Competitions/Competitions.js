@@ -57,11 +57,13 @@ function Competitions() {
        competitions_res = getActiveCompetitions(competitions);
         console.log(competitions_res);
     }
+    let id = sessionStorage.getItem('username');
+
   return (
       <body>
   <div class="e1_4">
     <div class="e1_5"></div>
-    <div class="e1_6"></div><span class="e1_7">Ставки</span><a href="" class="e1_8">telegram_nick</a>
+    <div class="e1_6"></div><span class="e1_7">Ставки</span><a href="/profile" class="e1_8">{id}</a>
 
       <button onClick={handleCreate} class="e1_12"><span class="e1_13">Создать соревнование</span></button><div class="e1_14"><input type="checkbox" name="Только действующие"  id="active" onChange={(e) => {setValueF(!valueF); changeCompetitions()}}/><label
       htmlFor="active">Только действующие</label></div>

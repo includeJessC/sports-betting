@@ -19,6 +19,7 @@ from swagger_server.models.user_info import UserInfo  # noqa: E501
 from swagger_server.models.user_meta import UserMeta  # noqa: E501
 import logging
 
+
 def competitions_get(id_):  # noqa: E501
     """competitions_get
 
@@ -30,7 +31,7 @@ def competitions_get(id_):  # noqa: E501
     :rtype: InlineResponse200
     """
     try:
-        
+
         db = DataBaseManagemantSystem()
         if not db.check_registered(id_):
             return ErrorResponse("BadRequest", "Пользователь не найден"), 404
@@ -214,10 +215,16 @@ def match_info_get(match_id, id_, competition_id):  # noqa: E501
     db = DataBaseManagemantSystem()
     try:
         compet_url = db.get_match_parsing_ref(competition_id, match_id)
-        if compet_url['parsing_ref'] is not None:
-            update_match(compet_url['special_id'], compet_url['parsing_ref'])
+        logging.info(compet_url)
+        try:
+            if compet_url['parsing_ref'] is not None:
+                update_match(compet_url['special_id'], compet_url['parsing_ref'])
+        except Exception as e:
+            logging.warning("Bad parse")
+            logging.warning(e)
         return db.get_match_info(match_id, compet_url['special_id'], id_)
     except Exception as e:
+        logging.warning("Exception happend")
         logging.warning(e)
         return ErrorResponse("BadMatch", "Неправильный матч"), 400
 
