@@ -6,13 +6,7 @@ import {Link, Outlet, useLoaderData} from "react-router-dom";
 import Vector1 from "../../static/Vector1.png"
 
 export async function loader()  {
-    console.log(localStorage.getItem('token'))
-    console.log(sessionStorage.getItem('username'))
     let toke = localStorage.getItem('token');
-    while (toke === null) {
-        toke = localStorage.getItem('token');
-    }
-    console.log(localStorage.getItem('token'))
     let id = sessionStorage.getItem('username');
     let data_ans = await axios.get('/competitions', {params: {id}, headers: {"X-Token": toke, "X-Username": id}});
     if (data_ans.status !== 200) {
