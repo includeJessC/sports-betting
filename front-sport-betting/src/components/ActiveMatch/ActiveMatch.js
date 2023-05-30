@@ -30,7 +30,7 @@ function ActiveMatch() {
     const [first_team_result, setFirstTeamResult] = useState('')
     const [second_team_result, setSecondTeamResult] = useState('')
     const match = useLoaderData();
-    if (typeof(match.user_bets) == "undefined") match.user_bets = []
+    if (typeof(match.user_bets.bets) == "undefined" || match.user_bets.bets == null) match.user_bets.bets = []
     const handleBet = async () => {
         await axios.post('/create/bet', {"bets": [{"bet": parseInt(first_team_result, 10), "name": "first_team_result"}, {"bet": parseInt(second_team_result, 10), "name": "second_team_result"}]}, {params: {id: id, match_id: match.id, competition_id: id_comp}, headers: {"X-Token": toke, "X-Username": id}});
         navigate('/competitions')

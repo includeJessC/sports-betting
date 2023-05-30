@@ -41,7 +41,7 @@ function EndedMatch() {
         navigate('/create_competitions');
     }
     const match = useLoaderData();
-    if (typeof(match.user_bets) == "undefined") match.user_bets = []
+    if (typeof(match.user_bets.bets) == "undefined" || match.user_bets.bets == null) match.user_bets.bets = []
     let id = sessionStorage.getItem('username');
     let name_comp = sessionStorage.getItem("comp_name");
   return (
@@ -75,7 +75,7 @@ function EndedMatch() {
           </th>
 
         </tr>
-          {match.user_bets.map((elem, index) => {
+          {match.user_bets.bets.map((elem, index) => {
               <tr>
                   <td>
                       <div className="e1_289">{index + 1}</div>

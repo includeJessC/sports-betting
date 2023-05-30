@@ -25,19 +25,20 @@ export function getActive(flag) {
 }
 
 export function getActiveLink(flag, comp_id, match_id, bets) {
+    console.log(bets)
     if (flag && typeof(bets) == "undefined") {
+        console.log('active')
         return `/competitions/${comp_id}/active/${match_id}`
     } else {
+        console.log('not active')
         return `/competitions/${comp_id}/ended/${match_id}`
     }
 }
 
 function Matches() {
     const navigate = useNavigate();
-    const handleCreate = async () => {
-        navigate('/create_match');
-    }
     const competition = useLoaderData();
+    let bet = competition.user_bets;
     sessionStorage.setItem("comp_name", competition.name)
     sessionStorage.setItem("comp_id", competition.id)
     let id = sessionStorage.getItem('username');
@@ -93,7 +94,7 @@ function Matches() {
                           <div className="e1_289">{index + 1}</div>
                       </td>
                       <td>
-                          <Link to={getActiveLink(elem.is_active, competition.id, elem.id, elem.user_bets)} className="e1_290">{elem.name}</Link>
+                          <a href={getActiveLink(elem.is_active, competition.id, elem.id, elem.user_bets)} className="e1_290">{elem.name}</a>
                       </td>
                       <td>
                           <div className="e1_291">{`${elem.first_team_result} : ${elem.second_team_result}`}</div>
